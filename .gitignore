@@ -1,0 +1,5 @@
+# Ignore everything
+Template/*
+
+!Template/InitializeTemplate.py
+!Template/TemplateFiles/*
