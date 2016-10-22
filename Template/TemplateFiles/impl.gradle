@@ -71,7 +71,8 @@ def $implreplace$ZipTask = { pjt ->
             binaries{
                 withType(StaticLibraryBinarySpec) { spec ->
                     spec.headerDirs.each {
-                        if (!it.toString().contains("wpilib")) {
+                        if (!it.toString().contains("build\\wpilib") && !it.toString().contains("build/wpilib") 
+                        && !it.toString().contains("arm\\$driverreplace$\\build\\include") && !it.toString().contains("arm/$driverreplace$/build/include") ) {
                           from(it) {
                               into 'include'
                               // We don't want to include any of the .cpp files that are in some of the header directories
@@ -96,27 +97,6 @@ def $implreplace$ZipTask = { pjt ->
                 }
             }
         }
-
-        from (halSharedLib) {
-            into 'lib'
-        }
-
-        from (halStaticLib) {
-            into 'lib'
-        }
-
-        from(ntcoreSharedLib) {
-            into 'lib'
-        }
-        from(ntcoreStaticLib) {
-            into 'lib'
-        }
-        from(wpiUtilStaticLib) {
-            into 'lib'
-        }
-
-        rename ("libHALAthena_shared.so", "libHALAthena.so")
-        rename ("libntcore_shared.so", "libntcore.so")
     }
 
     pjt.build.dependsOn pjt.$implreplace$Zip

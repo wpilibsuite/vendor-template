@@ -86,19 +86,16 @@ ext.releaseSetup = { releaseTasks ->
                     def debugLibrary = binary.sharedLibraryFile.absolutePath + ".debug"
                     if (project.tasks.findByName("firstObjcopy${binary.name}") == null) {
                         def firstObjcopy = project.tasks.create("firstObjcopy${binary.name}", Exec) { task ->
-                            if (file(library).exists()) {
-                              task.commandLine "${compilerPrefix}objcopy", '--only-keep-debug', library, debugLibrary
-                            }
+                            task.commandLine "${compilerPrefix}objcopy", '--only-keep-debug', library, debugLibrary
+                            task.ignoreExitValue true
                         }
                         def strip = project.tasks.create("strip${binary.name}", Exec) { task ->
-                            if (file(library).exists()) {
                               task.commandLine "${compilerPrefix}strip", '-g', library
-                            }
+                              task.ignoreExitValue true
                         }
                         def secondObjcopy = project.tasks.create("secondObjcopy${binary.name}", Exec) { task ->
-                            if (file(library).exists()) {
                               task.commandLine "${compilerPrefix}objcopy", "--add-gnu-debuglink=$debugLibrary", library
-                            }
+                              task.ignoreExitValue true
                         }
                         secondObjcopy.dependsOn strip
                         strip.dependsOn firstObjcopy
