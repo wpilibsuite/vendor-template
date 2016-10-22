@@ -16,9 +16,6 @@ driver_name_lower = driver_name.lower()
 project_name_lower = project_name.lower()
 
 def replaceImplDriver(file, output):
-    print(file)
-    print(output)
-    print(os.path.dirname(output))
     dir = os.path.dirname(output)
     
     if not os.path.exists(os.path.dirname(output)):
