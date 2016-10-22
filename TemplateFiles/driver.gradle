@@ -1,0 +1,161 @@
+defineWpiLibProperties()
+
+def $driverreplace$SetupModel = { project ->
+    project.model {
+        components {
+            $driverreplace$(NativeLibrarySpec) {
+                targetPlatform 'arm'
+                setupDefines(project, binaries)
+                
+                
+
+                binaries.all {
+                tasks.withType(CppCompile) {
+                    addWpilibLibraryLinks(it, linker, targetPlatform, false)
+                }
+                }
+
+                if (includeJava) {
+                    project.setupJniIncludes(binaries)
+                }
+
+                sources {
+                    cpp {
+                        source {
+                            srcDirs = ["${rootDir}/$driverreplace$/src"]
+                            if (includeJava) {
+                                srcDirs "${rootDir}/java/lib"
+                            }
+                            includes = ["**/*.cpp",]
+                        }
+                        exportedHeaders {
+                            srcDirs = ["${rootDir}/$driverreplace$/include", "${rootDir}/libraries/include", wpilibInclude]
+                            if (includeJava) {
+                                project.jniHeaders$implreplace$.outputs.files.each { file ->
+                                    srcDirs file.getPath()
+                                }
+                            }
+                            includes = ['**/*.h']
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+
+def $driverreplace$ZipTask = { pjt ->
+    pjt.ext.$driverreplace$Zip = pjt.tasks.create("$driverreplace$Zip", Zip) {
+        description = 'Creates platform-specific zip of the desktop $driverreplace$ libraries.'
+        group = 'WPILib'
+        destinationDir = pjt.buildDir
+        baseName = '$driverreplace$'
+        duplicatesStrategy = 'exclude'
+
+        from(file('$driverreplace$/include')) {
+            into 'include'
+        }
+
+        if (!pjt.hasProperty('skipJava')) {
+            pjt.jniHeaders$implreplace$.outputs.each {
+                from(it) {
+                    into 'include'
+                }
+            }
+        }
+
+        pjt.model {
+            binaries {
+                withType(StaticLibraryBinarySpec) { binary ->
+                    from(binary.staticLibraryFile) {
+                        into 'lib'
+                    }
+                }
+                withType(SharedLibraryBinarySpec) { binary ->
+                    from(binary.sharedLibraryFile) {
+                        into 'lib'
+                    }
+                    def debugFile = new File(binary.sharedLibraryFile.absolutePath + ".debug")
+                    if (debugFile.exists()) {
+                        from(debugFile) {
+                            into 'lib'
+                        }
+                    }
+                }
+            }
+        }
+
+        from (halSharedLib) {
+            into 'lib'
+        }
+
+        from (halStaticLib) {
+            into 'lib'
+        }
+
+        from(wpiUtilStaticLib) {
+            into 'lib'
+        }
+
+        rename ("libHALAthena_shared.so", "libHALAthena.so")
+    }
+
+    pjt.build.dependsOn pjt.$driverreplace$Zip
+
+    def releaseTasks = [pjt.$driverreplace$Zip]
+
+    if (includeJava) {
+        releaseTasks.add(pjt.jar)
+    }
+
+    pjt.releaseSetup(releaseTasks)
+
+    pjt.tasks.whenTaskAdded { task ->
+        def name = task.name.toLowerCase()
+        if (name.contains("$driverreplacelower$sharedlibrary") || name.contains("$driverreplacelower$staticlibrary")) {
+            pjt.$driverreplace$Zip.dependsOn task
+        }
+    }
+}
+
+project(':arm:$driverreplace$') {
+  apply plugin: 'cpp'
+
+  apply from: "${rootDir}/toolchains/arm.gradle"
+
+  if (includeJava) {
+    apply from: "${rootDir}/java/java.gradle"
+  }
+
+  $driverreplace$SetupModel(project)
+  $driverreplace$ZipTask(project)
+}
+
+task $driverreplace$SourceZip(type: Zip) {
+    description = 'Creates a sources-zip of the $driverreplace$ source files'
+    group = 'WPILib'
+    destinationDir = project.buildDir
+    baseName = '$driverreplace$'
+    classifier = "sources"
+    duplicatesStrategy = 'exclude'
+
+    from('$driverreplace$/src') {
+        into 'src'
+    }
+
+    from('$driverreplace$/include') {
+        into 'include'
+    }
+
+    if (includeJava) {
+        from('java/lib') {
+            into 'src'
+        }
+        project(':arm:$driverreplace$').jniHeaders$implreplace$.outputs.each {
+            from(it) {
+                into 'include'
+            }
+        }
+    }
+}

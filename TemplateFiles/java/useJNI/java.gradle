@@ -1,0 +1,118 @@
+import org.gradle.internal.os.OperatingSystem
+
+apply plugin: 'java'
+apply plugin: 'net.ltgt.errorprone'
+
+repositories {
+    mavenCentral()
+}
+
+configurations.errorprone {
+    resolutionStrategy.force 'com.google.errorprone:error_prone_core:2.0.9'
+}
+
+def generatedJNIHeaderLoc = "${buildDir}/include"
+
+sourceSets {
+    main {
+        java {
+            srcDirs = ["${rootDir}/java/src"]
+        }
+    }
+    }
+    
+dependencies {
+     compile 'edu.wpi.first.wpilibj:wpilibJavaFinal:2017.+'
+     runtime 'edu.wpi.first.wpilibj:wpilibJavaFinal:2017.+'
+}
+
+jar {
+    description = 'Generates $implreplace$ jar, with the JNI shared libraries embedded'
+    baseName = '$implreplace$'
+    duplicatesStrategy = 'exclude'
+
+    dependsOn { classes }
+}
+
+project.tasks.whenTaskAdded { task ->
+        if (task.name == '$implreplace$SharedLibrary') jar.dependsOn task
+}
+
+task $implreplace$JavaSource(type: Jar, dependsOn: classes) {
+    description = 'Generates the source jar for $implreplace$ java'
+    group = 'WPILib'
+    baseName = '$implreplace$'
+    classifier = "sources"
+    duplicatesStrategy = 'exclude'
+
+    from sourceSets.main.allJava
+}
+
+task $implreplace$Javadoc(type: Jar, dependsOn: javadoc) {
+    description = 'Generates the javadoc jar for $implreplace$ java'
+    group = 'WPILib'
+    baseName = '$implreplace$'
+    classifier = "javadoc"
+    duplicatesStrategy = 'exclude'
+
+    from javadoc.destinationDir
+}
+
+build.dependsOn $implreplace$JavaSource
+build.dependsOn $implreplace$Javadoc
+
+/**
+ * Generates the JNI headers
+ */
+task jniHeaders$implreplace$ {
+    description = 'Generates JNI headers from edu.wpi.first.wpilibj.$implreplace$.*'
+    group = 'WPILib'
+    def outputFolder = file(generatedJNIHeaderLoc)
+    inputs.files sourceSets.main.output
+    outputs.file outputFolder
+    doLast {
+        outputFolder.mkdirs()
+        exec {
+            executable org.gradle.internal.jvm.Jvm.current().getExecutable('javah')
+            args '-d', outputFolder
+            args '-classpath', sourceSets.main.runtimeClasspath.asPath
+            args '$javapackage$.$implreplace$JNI'
+        }
+    }
+}
+
+clean {
+    delete generatedJNIHeaderLoc
+}
+
+compileJava {
+    options.compilerArgs << '-Xlint:unchecked'
+}
+
+javadoc {
+    options.addStringOption('Xdoclint:none', '-quiet')
+}
+
+// This creates a lambda that the main build.gradle can access, which sets up the JNI includes for the
+// target build platform. This lambda is exposed as a property in the main build.gradle.
+ext.setupJniIncludes = { binaries ->
+    def platformSpecificIncludeFlag = { loc, cppCompiler ->
+        if (OperatingSystem.current().isWindows()) {
+            cppCompiler.args "/I$loc"
+        } else {
+            cppCompiler.args '-I', loc
+        }
+    }
+    binaries.all {
+        tasks.withType(CppCompile) {
+            cppCompiler.args '-I', file("${rootDir}/java/arm-linux").absolutePath
+            cppCompiler.args '-I', file("${rootDir}/java/arm-linux/linux").absolutePath
+
+            jniHeaders$implreplace$.outputs.files.each { file ->
+                cppCompiler.args '-I', file.getPath()
+            }
+
+            dependsOn jniHeaders$implreplace$
+        }
+    }
+}

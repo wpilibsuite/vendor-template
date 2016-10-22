@@ -1,0 +1,160 @@
+defineWpiLibProperties()
+
+def $implreplace$SetupModel = { project ->
+    project.model {
+        components {
+            $implreplace$(NativeLibrarySpec) {
+                targetPlatform 'arm'
+                setupDefines(project, binaries)
+                
+                
+                                binaries.all {
+                tasks.withType(CppCompile) {
+                    addWpilibLibraryLinks(it, linker, targetPlatform, true)
+                }
+                }
+
+                sources {
+                    cpp {
+                        source {
+                            srcDirs = ["${rootDir}/src"]
+                            includes = ["**/*.cpp"]
+                        }
+                        exportedHeaders {
+                            srcDirs = ["${rootDir}/include", "${rootDir}/libraries/include", wpilibInclude]
+                            includes = ['**/*.h']
+                        }
+                        lib project: ':arm:$driverreplace$', library: '$driverreplace$', linkage: 'static'
+                    }
+                }
+            }
+        }
+    }
+}
+
+def $implreplace$ZipTask = { pjt ->
+    pjt.ext.$implreplace$Zip = pjt.tasks.create("$implreplace$Zip", Zip) {
+        description = 'Creates platform-specific zip of the desktop $implreplace$ libraries.'
+        group = 'WPILib'
+        destinationDir = pjt.buildDir
+        baseName = '$implreplace$'
+        duplicatesStrategy = 'exclude'
+
+        from(file('include')) {
+            into 'include'
+        }
+
+        pjt.model {
+            binaries {
+                withType(StaticLibraryBinarySpec) { binary ->
+                    from(binary.staticLibraryFile) {
+                        into 'lib'
+                    }
+                }
+                withType(SharedLibraryBinarySpec) { binary ->
+                    from(binary.sharedLibraryFile) {
+                        into 'lib'
+                    }
+                    def debugFile = new File(binary.sharedLibraryFile.absolutePath + ".debug")
+                    if (debugFile.exists()) {
+                        from(debugFile) {
+                            into 'lib'
+                        }
+                    }
+                }
+            }
+        }
+
+        // Include the static library file and shared library object from $driverreplace$ project
+        def hal = project(':arm:$driverreplace$')
+        hal.model{
+            binaries{
+                withType(StaticLibraryBinarySpec) { spec ->
+                    spec.headerDirs.each {
+                        if (!it.toString().contains("wpilib")) {
+                          from(it) {
+                              into 'include'
+                              // We don't want to include any of the .cpp files that are in some of the header directories
+                              exclude '**/*.cpp'
+                          }
+                        }
+                    }
+                    from(spec.staticLibraryFile) {
+                        into 'lib'
+                    }
+                }
+                withType(SharedLibraryBinarySpec) { spec ->
+                    from(spec.sharedLibraryFile) {
+                        into 'lib'
+                    }
+                    def debugFile = new File(spec.sharedLibraryFile.absolutePath + ".debug")
+                    if (debugFile.exists()) {
+                        from(debugFile) {
+                            into 'lib'
+                        }
+                    }
+                }
+            }
+        }
+
+        from (halSharedLib) {
+            into 'lib'
+        }
+
+        from (halStaticLib) {
+            into 'lib'
+        }
+
+        from(ntcoreSharedLib) {
+            into 'lib'
+        }
+        from(ntcoreStaticLib) {
+            into 'lib'
+        }
+        from(wpiUtilStaticLib) {
+            into 'lib'
+        }
+
+        rename ("libHALAthena_shared.so", "libHALAthena.so")
+        rename ("libntcore_shared.so", "libntcore.so")
+    }
+
+    pjt.build.dependsOn pjt.$implreplace$Zip
+
+    def releaseTasks = [pjt.$implreplace$Zip]
+
+    pjt.releaseSetup(releaseTasks)
+
+    pjt.tasks.whenTaskAdded { task ->
+        def name = task.name.toLowerCase()
+        if (name.contains("$implreplacelower$sharedlibrary") || name.contains("$implreplacelower$staticlibrary")) {
+            pjt.$implreplace$Zip.dependsOn task
+        }
+    }
+}
+
+project(':arm:$implreplace$') {
+  apply plugin: 'cpp'
+
+  apply from: "${rootDir}/toolchains/arm.gradle"
+
+  $implreplace$SetupModel(project)
+  $implreplace$ZipTask(project)
+}
+
+task $implreplace$SourceZip(type: Zip) {
+    description = 'Creates a sources-zip of the $implreplace$ source files'
+    group = 'WPILib'
+    destinationDir = project.buildDir
+    baseName = '$implreplace$'
+    classifier = "sources"
+    duplicatesStrategy = 'exclude'
+
+    from('src') {
+        into 'src'
+    }
+
+    from('include') {
+        into 'include'
+    }
+}

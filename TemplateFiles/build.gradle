@@ -1,0 +1,134 @@
+import org.gradle.internal.os.OperatingSystem
+
+plugins {
+    id 'net.ltgt.errorprone' version '0.0.8'
+    id 'edu.wpi.first.wpilib.versioning.WPILibVersioningPlugin' version '1.1'
+}
+
+allprojects {
+    repositories {
+        mavenCentral()
+    }
+}
+
+// Determine what repo to publish to. Default is development. Valid options are development, beta, stable, and release
+if (!hasProperty('repo')) {
+    allprojects {
+        ext.repo = 'development'
+    }
+}
+
+ext.includeJava = !project.hasProperty('skipJava')
+
+
+ext.getPlatformPath = { binary ->
+    if (binary.targetPlatform.architecture.arm) {
+        return 'Linux/arm'
+    } else {
+        return binary.targetPlatform.operatingSystem.name + '/' + binary.targetPlatform.architecture.name
+    }
+}
+
+ext.setupDefines = { project, binaries ->
+    binaries.all {
+	if (project.hasProperty('debug')) {
+	    project.setupDebugDefines(cppCompiler, linker)
+	} else {
+	    project.setupReleaseDefines(cppCompiler, linker)
+	}
+  }
+}
+
+def wpilibUnzipLocation = "$buildDir/wpilib"
+
+task downloadWpilib() {
+    description = 'Downloads the C++ ARM wpilib maven dependency.'
+
+    group = 'WPILib'
+    def depFolder = "$buildDir/dependencies"
+    def libZip = file("$depFolder/cpp-root.zip")
+    outputs.file(libZip)
+    def armWPILib
+    
+
+    doFirst {
+        def armWpiUtilDependency = project.dependencies.create("edu.wpi.first.wpilib.cmake:cpp-root:+")
+        def armWpiUtilConfig = project.configurations.detachedConfiguration(armWpiUtilDependency)
+        armWpiUtilConfig.setTransitive(false)
+        armWPILib = armWpiUtilConfig.files[0].canonicalFile
+    }
+
+    doLast {
+        copy {
+            from armWPILib
+            rename 'cpp-root(.+)', 'cpp-root.zip'
+            into depFolder
+        }
+    }
+}
+
+// Create a task that will unzip the wpilib files into a temporary build directory
+task unzipWpilib(type: Copy) {
+    description = 'Unzips the wpilib maven dependency so that the include files and libraries can be used'
+    group = 'WPILib'
+    dependsOn downloadWpilib
+    
+    from zipTree(downloadWpilib.outputs.files.singleFile)
+    into wpilibUnzipLocation
+}
+
+task clean(type: Delete) {
+    description = "Deletes the build directory"
+    group = "Build"
+    delete buildDir
+}
+
+ext.defineWpiLibProperties = {
+  ext.wpilib = wpilibUnzipLocation
+  ext.wpilibInclude = "$wpilibUnzipLocation/include"
+  ext.wpilibLocation = "$wpilibUnzipLocation/lib"
+  ext.wpilibStaticLib = "$wpilibLocation/libwpilib_nonshared.a"
+  ext.halSharedLib = "$wpilibLocation/libHALAthena_shared.so"
+  ext.ntcoreSharedLib = "$wpilibLocation/libntcore_shared.so"
+  ext.halStaticLib = "$wpilibLocation/libHALAthena.a"
+  ext.ntcoreStaticLib = "$wpilibLocation/libntcore.a"
+  ext.wpiUtilStaticLib = "$wpilibLocation/libwpiutil.a"
+  
+  ext.addWpilibLibraryLinks = { compileTask, linker, targetPlatform, fullWPILib ->
+    compileTask.dependsOn project(':').unzipWpilib
+    String architecture = targetPlatform.architecture
+    if (architecture.contains('arm')) {
+      // Grab all the shared libraries and link them
+      linker.args halStaticLib
+      if (fullWPILib) {
+            linker.args ntcoreStaticLib
+            linker.args wpilibStaticLib
+      }
+      linker.args wpiUtilStaticLib
+      
+      linker.args "$wpilibLocation/libnilibraries.so"
+            
+      def libPattern = /.*((\\/|\\).*)+lib(?<libName>.+).so$/
+      def libraryArgs = []
+      def libraryPath = wpilibLocation
+
+      linker.args << '-L' + libraryPath
+
+    }
+  }
+}
+
+
+apply from: "$implreplace$.gradle"
+apply from: "$driverreplace$.gradle"
+
+// Empty task for build so that ntcoreSourceZip and $driverreplace$SourceZip will be
+// built when running ./gradlew build
+task build
+
+build.dependsOn $implreplace$SourceZip
+build.dependsOn $driverreplace$SourceZip
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '3.0'
+}
