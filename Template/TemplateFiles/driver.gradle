@@ -71,7 +71,7 @@ def $driverreplace$ZipTask = { pjt ->
             into 'include'
         }
         
-        from(file('libraries/$driverreplace$/src')) {
+        from(file('libraries/$driverreplace$/lib')) {
           include '*.so*'
           include '*.a*'
           into 'lib'
