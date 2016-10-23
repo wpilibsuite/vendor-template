@@ -5,12 +5,12 @@ vendor-template is a build system for vendors to use in order to link their libr
 ## Build Requirements
 To run a build, a few requirements must be met:
 
-- ARM Toolchain - To crosscompile ntcore for the roboRIO, you must have the FRC ARM toolchain installed, which can be found [here](http://first.wpi.edu/FRC/roborio/toolchains/).
+- ARM Toolchain - You must have the FRC ARM toolchain installed, which can be found [here](http://first.wpi.edu/FRC/roborio/toolchains/).
 
 In addition, python is required to generate the repository correctly. However after initial creation python is no longer necessary
 
 ## Building
-Gradle is the main build system used by ntcore. All tasks are run with the `gradlew` wrapper, which is included in the root of the repository. All targets that can be accomplished by Gradle are referred to as tasks. The main task available is `build`. To run Gradle, cd into the build directory and run:
+Gradle is the main build system used by this template. All tasks are run with the `gradlew` wrapper, which is included in the root of the repository. All targets that can be accomplished by Gradle are referred to as tasks. The main task available is `build`. To run Gradle, cd into the build directory and run:
 
 ```bash
 ./gradlew build
@@ -35,6 +35,11 @@ If you did not select to use the JNI, the build system will provide 2 libraries.
 If your library can be used completely using WPILib level classes and functionality, the no JNI build option should be the right one. However, if you do need native level code, in order for everything to link properly and be functional, you will most likely have to use the driver/JNI library with a thin wrapper on top written in either WPILib language.
 
 ## Packing for distribution
-We are still currenly working on upgrading the library in order to pack all the libraries for release. However, manually it is not too difficult. In the arm folder, there is a folder with "Driver" in the name, and one that is not. In the one without "Driver", there is a zip called "ProjectName.zip". This zip library contains both the shared and static versions of the C++ implementation library, along with the headers, so this is the only thing needed to be released there.
+During the build process, a release folder will be created in the root of the repository. Inside of this folder will be 6 zips. 
 
-In the Driver folder, The "PackageNameDriver.zip" file contains only the C++ code for the Driver library. The Java jar is located in the "libs" folder. In order to release, you will need that jar, and if you built JNI, you will need the libProjectNameDriver.so library out of the zip, and that will need to be provided.
+- ProjectName-driver.zip will contain the driver library and all libraries needed to run it. Note if you selected no JNI/Driver library, this zip will be emply except for 2 prebuilt libraries. Will also contain all necessary dependancies and headers
+- ProjectName-java.zip will contain the java jar, along with the javadocs for java. In addition, if JNI was selected, this zip will contain the native JNI/driver library as well.
+- ProjectName-cpp.zip will contain the C++ library for use with wpilibc. Will also contain all necessary dependancies and headers
+- ProjectName-driversources.zip will contain the sources and headers for the driver/jni library
+- ProjectName-javasources.zip will contain the Java sources
+- ProjectName-cppsources.zip will contain the sources and headers for the wpilibc library

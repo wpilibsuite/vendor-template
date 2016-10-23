@@ -38,7 +38,7 @@ def $implreplace$ZipTask = { pjt ->
         description = 'Creates platform-specific zip of the desktop $implreplace$ libraries.'
         group = 'WPILib'
         destinationDir = releaseDir
-        baseName = '$implreplace$-wpilibc'
+        baseName = '$implreplace$-cpp'
         duplicatesStrategy = 'exclude'
 
         from(file('include')) {
@@ -132,9 +132,9 @@ project(':arm:$implreplace$') {
 task $implreplace$SourceZip(type: Zip) {
     description = 'Creates a sources-zip of the $implreplace$ source files'
     group = 'WPILib'
-    destinationDir = project.buildDir
+    destinationDir = releaseDir
     baseName = '$implreplace$'
-    classifier = "sources"
+    classifier = "cppsources"
     duplicatesStrategy = 'exclude'
 
     from('src') {

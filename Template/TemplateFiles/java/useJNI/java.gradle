@@ -76,6 +76,7 @@ task jniHeaders$implreplace$ {
             executable org.gradle.internal.jvm.Jvm.current().getExecutable('javah')
             args '-d', outputFolder
             args '-classpath', sourceSets.main.runtimeClasspath.asPath
+            // If you need more JNI files, add them here
             args '$javapackage$.$implreplace$JNI'
         }
     }

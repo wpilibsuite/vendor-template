@@ -129,7 +129,6 @@ def JavaZipTask = { project ->
     duplicatesStrategy = 'exclude'
     dependsOn { project.jar }
     dependsOn { project.$implreplace$Javadoc }
-    dependsOn { project.$implreplace$JavaSource }
     
     project.model {
       binaries {
@@ -156,12 +155,7 @@ def JavaZipTask = { project ->
       include '*.so*'
       into '/'
     }
-    
-    from project.$implreplace$JavaSource.outputs.files {
-      include '*.jar'
-      include '*.so*'
-      into '/'
-    }
+
     from project.$implreplace$Javadoc.outputs.files {
       include '*.jar'
       include '*.so*'
@@ -179,8 +173,34 @@ def JavaZipTask = { project ->
             project.JavaZip.dependsOn task
         }
     }
+}
+
+def JavaSourceZipTask = { project ->
+  project.ext.JavaZip = project.tasks.create("JavaSourceZip", Zip) {
+    description = 'Creates a zip of the Java sources.'
+    group = 'WPILib'
+    destinationDir = releaseDir
+    baseName = '$implreplace$-javasources'
+    duplicatesStrategy = 'exclude'
+    dependsOn { project.$implreplace$JavaSource }
+
+    from project.$implreplace$JavaSource.outputs.files {
+      include '*.jar'
+      include '*.so*'
+      into '/'
+    }
+  }
   
+  project.build.dependsOn project.JavaZip
   
+  project.debugStripSetup()
+  
+  project.tasks.whenTaskAdded { task ->
+        def name = task.name.toLowerCase()
+        if (name.contains("testdriversharedlibrary") || name.contains("testdriverstaticlibrary")) {
+            project.JavaZip.dependsOn task
+        }
+    }
 }
 
 project(':arm:$driverreplace$') {
@@ -195,14 +215,15 @@ project(':arm:$driverreplace$') {
   $driverreplace$SetupModel(project)
   $driverreplace$ZipTask(project)
   JavaZipTask(project)
+  JavaSourceZipTask(project)
 }
 
 task $driverreplace$SourceZip(type: Zip) {
     description = 'Creates a sources-zip of the $driverreplace$ source files'
     group = 'WPILib'
-    destinationDir = project.buildDir
+    destinationDir = releaseDir
     baseName = '$driverreplace$'
-    classifier = "sources"
+    classifier = "driversources"
     duplicatesStrategy = 'exclude'
 
     from('$driverreplace$/src') {
