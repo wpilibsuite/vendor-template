@@ -87,6 +87,11 @@ files_to_copy = {
 for key,value in files_to_copy.items():
     replaceImplDriver(key, value)
 
+os.makedirs(join(join('libraries', driver_name), 'include'))
+os.makedirs(join(join('libraries', driver_name), 'src'))
+os.makedirs(join(join('libraries', project_name), 'include'))
+os.makedirs(join(join('libraries', project_name), 'src'))
+
 if use_jni == '1':
     for key,value in jni_files_to_copy.items():
         replaceImplDriver(key, value)

@@ -8,10 +8,11 @@ def $implreplace$SetupModel = { project ->
                 setupDefines(project, binaries)
                 
                 
-                                binaries.all {
-                tasks.withType(CppCompile) {
+                binaries.all {
+                  tasks.withType(CppCompile) {
+                    addUserLinks(linker, targetPlatform, true)
                     addWpilibLibraryLinks(it, linker, targetPlatform, true)
-                }
+                  }
                 }
 
                 sources {
@@ -21,7 +22,7 @@ def $implreplace$SetupModel = { project ->
                             includes = ["**/*.cpp"]
                         }
                         exportedHeaders {
-                            srcDirs = ["${rootDir}/include", "${rootDir}/libraries/include", wpilibInclude]
+                            srcDirs = ["${rootDir}/include", "${rootDir}/libraries/$driverreplace$/include", "${rootDir}/libraries/$implreplace$/include", wpilibInclude]
                             includes = ['**/*.h']
                         }
                         lib project: ':arm:$driverreplace$', library: '$driverreplace$', linkage: 'static'
@@ -61,6 +62,27 @@ def $implreplace$ZipTask = { pjt ->
                       }
                 }
             }
+        }
+        
+        // Copy all library files
+        from(file('libraries/$driverreplace$/include')) {
+            into 'include'
+        }
+        
+        from(file('libraries/$driverreplace$/src')) {
+          include '*.so*'
+          include '*.a*'
+          into 'lib'
+        }
+        
+        from(file('libraries/$implreplace$/include')) {
+            into 'include'
+        }
+        
+        from(file('libraries/$implreplace$/src')) {
+          include '*.so*'
+          include '*.a*'
+          into 'lib'
         }
 
         // Include the static library file and shared library object from $driverreplace$ project

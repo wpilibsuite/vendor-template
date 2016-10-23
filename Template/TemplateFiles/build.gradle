@@ -39,6 +39,48 @@ ext.setupDefines = { project, binaries ->
   }
 }
 
+ext.addUserLinks = { linker, targetPlatform, implLib ->
+  def libPattern = /.*((\\/|\\).*)+lib(?<libName>.+).so$/
+  def libraryArgs = []
+  def libraryPath = file('libraries\$driverreplace$\lib').path
+
+  // adds all libraries found in the driver folder
+  def libraryTree = fileTree(libraryPath)
+  libraryTree.include '*.so'
+  libraryTree.include '*.a'
+
+  libraryTree.each { lib ->
+    def nameMatcher = (lib.path =~ libPattern)
+    if (nameMatcher[0].size() > 1) {
+      def name = nameMatcher.group('libName')
+      libraryArgs << '-l' + name
+    }
+  }
+  
+  if (implLib) {
+    // adds all libraries found in the impl folder
+    def implLibraryPath = file('libraries\$implreplace$\lib').path
+    def implLibraryTree = fileTree(implLibraryPath)
+    implLibraryTree.include '*.so'
+    implLibraryTree.include '*.a'
+
+    implLibraryTree.each { lib ->
+      def nameMatcher = (lib.path =~ libPattern)
+      if (nameMatcher[0].size() > 1) {
+        def name = nameMatcher.group('libName')
+        libraryArgs << '-l' + name
+      }
+    }
+  }
+   
+  // Add all arguments
+  String architecture = targetPlatform.architecture
+  if (architecture.contains('arm')){
+    linker.args << '-L' + libraryPath
+    linker.args.addAll(libraryArgs)
+  }
+}
+
 def wpilibUnzipLocation = "$buildDir/wpilib"
 
 task downloadWpilib() {

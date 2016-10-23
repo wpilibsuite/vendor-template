@@ -10,9 +10,10 @@ def $driverreplace$SetupModel = { project ->
                 
 
                 binaries.all {
-                tasks.withType(CppCompile) {
+                  tasks.withType(CppCompile) {
+                    addUserLinks(linker, targetPlatform, false)
                     addWpilibLibraryLinks(it, linker, targetPlatform, false)
-                }
+                  }
                 }
 
                 if (includeJava) {
@@ -29,7 +30,7 @@ def $driverreplace$SetupModel = { project ->
                             includes = ["**/*.cpp",]
                         }
                         exportedHeaders {
-                            srcDirs = ["${rootDir}/$driverreplace$/include", "${rootDir}/libraries/include", wpilibInclude]
+                            srcDirs = ["${rootDir}/$driverreplace$/include", "${rootDir}/libraries/$driverreplace$/include", wpilibInclude]
                             if (includeJava) {
                                 project.jniHeaders$implreplace$.outputs.files.each { file ->
                                     srcDirs file.getPath()
@@ -64,6 +65,18 @@ def $driverreplace$ZipTask = { pjt ->
                 }
             }
         }
+        
+        // Copy all library files
+        from(file('libraries/$driverreplace$/include')) {
+            into 'include'
+        }
+        
+        from(file('libraries/$driverreplace$/src')) {
+          include '*.so*'
+          include '*.a*'
+          into 'lib'
+        }
+        
 
         pjt.model {
             binaries {
@@ -125,8 +138,6 @@ def JavaZipTask = { project ->
     dependsOn { project.$implreplace$JavaSource }
     dependsOn { project.secondObjcopysharedLibrary }
     
-    
-    
     project.model {
       binaries {
         withType(SharedLibraryBinarySpec) { binary ->
@@ -140,6 +151,12 @@ def JavaZipTask = { project ->
         }
       }
     }
+        
+    from(file('libraries/$driverreplace$/src')) {
+      include '*.so*'
+      into '/'
+    }
+        
     
     from project.jar.outputs.files {
       include '*.jar'
