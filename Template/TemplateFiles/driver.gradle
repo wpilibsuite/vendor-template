@@ -121,8 +121,8 @@ def JavaZipTask = { project ->
     baseName = '$implreplace$-java'
     duplicatesStrategy = 'exclude'
     dependsOn { project.jar }
-    dependsOn { project.TestJavadoc }
-    dependsOn { project.TestJavaSource }
+    dependsOn { project.$implreplace$Javadoc }
+    dependsOn { project.$implreplace$JavaSource }
     dependsOn { project.secondObjcopysharedLibrary }
     
     
@@ -147,12 +147,12 @@ def JavaZipTask = { project ->
       into '/'
     }
     
-    from project.TestJavaSource.outputs.files {
+    from project.$implreplace$JavaSource.outputs.files {
       include '*.jar'
       include '*.so*'
       into '/'
     }
-    from project.TestJavadoc.outputs.files {
+    from project.$implreplace$Javadoc.outputs.files {
       include '*.jar'
       include '*.so*'
       into '/'
