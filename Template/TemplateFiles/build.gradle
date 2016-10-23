@@ -40,9 +40,9 @@ ext.setupDefines = { project, binaries ->
 }
 
 ext.addUserLinks = { linker, targetPlatform, implLib ->
-  def libPattern = /.*((\\/|\\).*)+lib(?<libName>.+).so$/
+  def libPattern = /.*((\\/|\\).*)+lib(?<libName>.+).(.+)$/
   def libraryArgs = []
-  def libraryPath = file('libraries\$driverreplace$\lib').path
+  def libraryPath = file('libraries/$driverreplace$/lib').path
 
   // adds all libraries found in the driver folder
   def libraryTree = fileTree(libraryPath)
@@ -59,7 +59,7 @@ ext.addUserLinks = { linker, targetPlatform, implLib ->
   
   if (implLib) {
     // adds all libraries found in the impl folder
-    def implLibraryPath = file('libraries\$implreplace$\lib').path
+    def implLibraryPath = file('libraries/$implreplace$/lib').path
     def implLibraryTree = fileTree(implLibraryPath)
     implLibraryTree.include '*.so'
     implLibraryTree.include '*.a'

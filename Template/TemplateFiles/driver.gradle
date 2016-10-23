@@ -152,7 +152,7 @@ def JavaZipTask = { project ->
       }
     }
         
-    from(file('libraries/$driverreplace$/src')) {
+    from(file('libraries/$driverreplace$/lib')) {
       include '*.so*'
       into '/'
     }
