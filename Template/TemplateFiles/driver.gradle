@@ -109,14 +109,8 @@ def $driverreplace$ZipTask = { pjt ->
     }
 
     pjt.build.dependsOn pjt.$driverreplace$Zip
-
-    def releaseTasks = [pjt.$driverreplace$Zip]
-
-    if (includeJava) {
-        releaseTasks.add(pjt.jar)
-    }
-
-    pjt.releaseSetup(releaseTasks)
+    
+    pjt.debugStripSetup()
 
     pjt.tasks.whenTaskAdded { task ->
         def name = task.name.toLowerCase()
@@ -136,9 +130,6 @@ def JavaZipTask = { project ->
     dependsOn { project.jar }
     dependsOn { project.$implreplace$Javadoc }
     dependsOn { project.$implreplace$JavaSource }
-    if (!project.hasProperty('debug')) {
-      dependsOn { project.secondObjcopysharedLibrary }
-    }
     
     project.model {
       binaries {
@@ -180,13 +171,7 @@ def JavaZipTask = { project ->
   
   project.build.dependsOn project.JavaZip
   
-  def releaseTasks = [project.JavaZip]
-  
-  if (includeJava) {
-        releaseTasks.add(project.jar)
-    }
-  
-  project.releaseSetup(releaseTasks)
+  project.debugStripSetup()
   
   project.tasks.whenTaskAdded { task ->
         def name = task.name.toLowerCase()

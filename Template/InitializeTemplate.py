@@ -4,6 +4,10 @@ import shutil
 from os.path import join
 
 project_name = input("Please enter a name for your project: ")
+project_name = project_name.replace('-', '')
+project_name = project_name.replace(' ', '')
+project_name = project_name.replace('.', '')
+project_name = project_name.replace('_', '')
 package_name = input("Please enter a java package name: ")
 use_jni = input("Enter 1 to use JNI and a driver library, otherwise enter 0: ")
 

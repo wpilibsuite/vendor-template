@@ -110,9 +110,7 @@ def $implreplace$ZipTask = { pjt ->
 
     pjt.build.dependsOn pjt.$implreplace$Zip
 
-    def releaseTasks = [pjt.$implreplace$Zip]
-
-    pjt.releaseSetup(releaseTasks)
+    pjt.debugStripSetup()
 
     pjt.tasks.whenTaskAdded { task ->
         def name = task.name.toLowerCase()

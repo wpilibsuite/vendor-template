@@ -77,35 +77,25 @@ ext.setupDebugDefines = { cppCompiler, linker ->
 // Used only on Windows.
 ext.setupDef = { linker, deffile -> }
 
-ext.releaseSetup = { releaseTasks ->
-    model {
-        binaries {
-            withType(SharedLibraryBinarySpec) { binary ->
-                if (!project.hasProperty('debug')) {
-                    def library = binary.sharedLibraryFile.absolutePath
-                    def debugLibrary = binary.sharedLibraryFile.absolutePath + ".debug"
-                    if (project.tasks.findByName("firstObjcopy${binary.name}") == null) {
-                        def firstObjcopy = project.tasks.create("firstObjcopy${binary.name}", Exec) { task ->
-                            task.commandLine "${compilerPrefix}objcopy", '--only-keep-debug', library, debugLibrary
-                            task.ignoreExitValue true
-                        }
-                        def strip = project.tasks.create("strip${binary.name}", Exec) { task ->
-                              task.commandLine "${compilerPrefix}strip", '-g', library
-                              task.ignoreExitValue true
-                        }
-                        def secondObjcopy = project.tasks.create("secondObjcopy${binary.name}", Exec) { task ->
-                              task.commandLine "${compilerPrefix}objcopy", "--add-gnu-debuglink=$debugLibrary", library
-                              task.ignoreExitValue true
-                        }
-                        secondObjcopy.dependsOn strip
-                        strip.dependsOn firstObjcopy
-                        binary.tasks.whenObjectAdded { task ->
-                            if (task.name.contains('link')) {
-                                firstObjcopy.dependsOn task
-                            }
-                        }
+ext.debugStripSetup = {
+    if (!project.hasProperty('debug')) {
+        project.tasks.whenObjectAdded { task ->
+            if (task.name.contains('link') && task.name.contains('SharedLibrary')) {
+                def library = task.outputFile.absolutePath
+                def debugLibrary = task.outputFile.absolutePath + ".debug"
+                task.doLast {
+                    exec { 
+                      ignoreExitValue = true 
+                      commandLine "${compilerPrefix}objcopy", '--only-keep-debug', library, debugLibrary 
                     }
-                    releaseTasks.each { it.dependsOn project.tasks.getByName("secondObjcopy${binary.name}") }
+                    exec { 
+                      ignoreExitValue = true 
+                      commandLine "${compilerPrefix}strip", '-g', library 
+                    }
+                    exec { 
+                      ignoreExitValue = true 
+                      commandLine "${compilerPrefix}objcopy", "--add-gnu-debuglink=$debugLibrary", library 
+                    }
                 }
             }
         }
