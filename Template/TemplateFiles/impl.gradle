@@ -36,8 +36,8 @@ def $implreplace$ZipTask = { pjt ->
     pjt.ext.$implreplace$Zip = pjt.tasks.create("$implreplace$Zip", Zip) {
         description = 'Creates platform-specific zip of the desktop $implreplace$ libraries.'
         group = 'WPILib'
-        destinationDir = pjt.buildDir
-        baseName = '$implreplace$'
+        destinationDir = releaseDir
+        baseName = '$implreplace$-wpilibc'
         duplicatesStrategy = 'exclude'
 
         from(file('include')) {
@@ -56,11 +56,9 @@ def $implreplace$ZipTask = { pjt ->
                         into 'lib'
                     }
                     def debugFile = new File(binary.sharedLibraryFile.absolutePath + ".debug")
-                    if (debugFile.exists()) {
-                        from(debugFile) {
-                            into 'lib'
-                        }
-                    }
+                      from(debugFile) {
+                          into 'lib'
+                      }
                 }
             }
         }
@@ -82,17 +80,6 @@ def $implreplace$ZipTask = { pjt ->
                     }
                     from(spec.staticLibraryFile) {
                         into 'lib'
-                    }
-                }
-                withType(SharedLibraryBinarySpec) { spec ->
-                    from(spec.sharedLibraryFile) {
-                        into 'lib'
-                    }
-                    def debugFile = new File(spec.sharedLibraryFile.absolutePath + ".debug")
-                    if (debugFile.exists()) {
-                        from(debugFile) {
-                            into 'lib'
-                        }
                     }
                 }
             }
