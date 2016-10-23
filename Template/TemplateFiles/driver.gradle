@@ -136,7 +136,9 @@ def JavaZipTask = { project ->
     dependsOn { project.jar }
     dependsOn { project.$implreplace$Javadoc }
     dependsOn { project.$implreplace$JavaSource }
-    dependsOn { project.secondObjcopysharedLibrary }
+    if (!project.hasProperty('debug')) {
+      dependsOn { project.secondObjcopysharedLibrary }
+    }
     
     project.model {
       binaries {
