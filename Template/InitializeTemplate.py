@@ -95,6 +95,7 @@ os.makedirs(join(join('libraries', driver_name), 'include'))
 os.makedirs(join(join('libraries', driver_name), 'lib'))
 os.makedirs(join(join('libraries', project_name), 'include'))
 os.makedirs(join(join('libraries', project_name), 'lib'))
+os.makedirs(join('libraries', 'java'))
 
 if use_jni == '1':
     for key,value in jni_files_to_copy.items():

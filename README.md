@@ -26,7 +26,7 @@ If you selected to use JNI, the build system will build 3 libraries. The first w
 
 The second library is a Java library. This links to WPILibJ, and can access any functionality provided by WPILibJ. This can also use the JNI provided by the driver library
 
-The 3rd library is the C++ Implementation library. This library has full access to WPILibC and NetworkTables, and should be used to create a public interface for WPILibC teams to use.
+The 3rd library is the C++ Implementation library. This library has full access to WPILibC and NetworkTables, and should be used to create a public interface for WPILibC teams to use. It can use the driver to create an interface.
 
 ## Using the repository (No JNI)
 If you did not select to use the JNI, the build system will provide 2 libraries. The first is a C++ library that links to WPILibC with full access to all functionality provided there. The second is a Java library with full access to WPILibJ. This Java library will not have any JNI code in it, so if you need native code, please use the JNI option instead.
@@ -40,6 +40,9 @@ During the build process, a release folder will be created in the root of the re
 - ProjectName-driver.zip will contain the driver library and all libraries needed to run it. Note if you selected no JNI/Driver library, this zip will be emply except for 2 prebuilt libraries. Will also contain all necessary dependancies and headers
 - ProjectName-java.zip will contain the java jar, along with the javadocs for java. In addition, if JNI was selected, this zip will contain the native JNI/driver library as well.
 - ProjectName-cpp.zip will contain the C++ library for use with wpilibc. Will also contain all necessary dependancies and headers
-- ProjectName-driversources.zip will contain the sources and headers for the driver/jni library
+- ProjectName-driversources.zip will contain the sources and headers for the driver/jni library. This will not show up if you did not use the JNI/Driver option.
 - ProjectName-javasources.zip will contain the Java sources
-- ProjectName-cppsources.zip will contain the sources and headers for the wpilibc library
+- ProjectName-cppsources.zip will contain the sources and headers for the wpilibc library. This will not contain the sources for the driver library.
+
+## Linking to other libraries
+During creation, a folder called libraries is created in the root of the repo. Inside this folder are folders for the implementation library and the driver library. Headers and C libraries can be placed in these folders, and they will be automatically added to the projects. The driver library will only be able to access the driver libraries, and the implementation will be able to access both sets of native libraries. These libraries are placed in the release zips in order to be usable.

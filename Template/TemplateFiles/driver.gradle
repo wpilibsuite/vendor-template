@@ -148,7 +148,10 @@ def JavaZipTask = { project ->
       include '*.so*'
       into '/'
     }
-        
+    
+    from(file('libraries/java')) {
+      into '/'
+    } 
     
     from project.jar.outputs.files {
       include '*.jar'
