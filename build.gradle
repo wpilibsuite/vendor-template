@@ -1,0 +1,29 @@
+task wrapper(type: Wrapper) {
+    gradleVersion = '3.0'
+}
+
+def releaseDir = file("${rootDir}/release")
+
+task clean(type: Delete) {
+  delete releaseDir
+}
+
+task templateZip(type: Zip) {
+  description = 'Zips the template up for release'
+  group = 'WPILib'
+  destinationDir = releaseDir
+  baseName = 'vendor-template'
+  duplicatesStrategy = 'exclude'
+  
+  from(file('Template')) {
+    into '/'
+  }
+  
+  from(file('README.md')) {
+    into '/'
+  }
+}
+
+task build
+
+build.dependsOn templateZip

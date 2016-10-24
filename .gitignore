@@ -1,5 +1,8 @@
 # Ignore everything
 Template/*
 
+release/*
+.gradle/
+
 !Template/InitializeTemplate.py
 !Template/TemplateFiles/*
