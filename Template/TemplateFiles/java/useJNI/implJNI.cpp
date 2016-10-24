@@ -9,10 +9,13 @@
 #include <cstring>
 #include <string>
 
-#include "$packageunderscores$_$implreplace$JNI.h"
-#include "SampleDriver.h"
 #include "support/jni_util.h"
 #include "HAL/HAL.h"
+
+#include "$packageunderscores$_$implreplace$JNI.h"
+
+#include "SampleDriver.h"
+
 
 using namespace wpi::java;
 
