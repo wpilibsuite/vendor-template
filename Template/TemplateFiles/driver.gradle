@@ -95,6 +95,7 @@ def $driverreplace$ZipTask = { pjt ->
                     }
                 }
             }
+        }
     }
 
     pjt.build.dependsOn pjt.$driverreplace$Zip
