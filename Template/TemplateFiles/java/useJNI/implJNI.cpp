@@ -160,8 +160,8 @@ static void ReportError(JNIEnv *env, int32_t status, bool do_throw) {
 }
   
 
-inline bool CheckStatus(JNIEnv *env, int32_t status) {
-  if (status != 0) ReportError(env, status, false);
+inline bool CheckStatus(JNIEnv *env, int32_t status, bool do_throw = true) {
+  if (status != 0) ReportError(env, status, do_throw);
   return status == 0;
 }
 
