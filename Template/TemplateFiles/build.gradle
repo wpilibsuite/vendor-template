@@ -130,10 +130,8 @@ ext.defineWpiLibProperties = {
   ext.wpilibInclude = "$wpilibUnzipLocation/include"
   ext.wpilibLocation = "$wpilibUnzipLocation/lib"
   ext.wpilibStaticLib = "$wpilibLocation/libwpilib_nonshared.a"
-  ext.halSharedLib = "$wpilibLocation/libHALAthena_shared.so"
-  ext.ntcoreSharedLib = "$wpilibLocation/libntcore_shared.so"
-  ext.halStaticLib = "$wpilibLocation/libHALAthena.a"
-  ext.ntcoreStaticLib = "$wpilibLocation/libntcore.a"
+  ext.halSharedLib = "$wpilibLocation/libHALAthena.so"
+  ext.ntcoreSharedLib = "$wpilibLocation/libntcore.so"
   ext.wpiUtilStaticLib = "$wpilibLocation/libwpiutil.a"
   
   ext.addWpilibLibraryLinks = { compileTask, linker, targetPlatform, fullWPILib ->
@@ -141,9 +139,9 @@ ext.defineWpiLibProperties = {
     String architecture = targetPlatform.architecture
     if (architecture.contains('arm')) {
       // Grab all the shared libraries and link them
-      linker.args halStaticLib
+      linker.args halSharedLib
       if (fullWPILib) {
-            linker.args ntcoreStaticLib
+            linker.args ntcoreSharedLib
             linker.args wpilibStaticLib
       }
       linker.args wpiUtilStaticLib

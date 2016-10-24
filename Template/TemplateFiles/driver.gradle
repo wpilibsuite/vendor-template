@@ -95,17 +95,6 @@ def $driverreplace$ZipTask = { pjt ->
                     }
                 }
             }
-        }
-
-        from (halStaticLib) {
-            into 'lib'
-        }
-
-        from(wpiUtilStaticLib) {
-            into 'lib'
-        }
-
-        rename ("libHALAthena_shared.so", "libHALAthena.so")
     }
 
     pjt.build.dependsOn pjt.$driverreplace$Zip
@@ -172,7 +161,7 @@ def JavaZipTask = { project ->
   
   project.tasks.whenTaskAdded { task ->
         def name = task.name.toLowerCase()
-        if (name.contains("testdriversharedlibrary") || name.contains("testdriverstaticlibrary")) {
+        if (name.contains("$driverreplacelower$sharedlibrary") || name.contains("$driverreplacelower$sharedlibrary")) {
             project.JavaZip.dependsOn task
         }
     }
@@ -200,7 +189,7 @@ def JavaSourceZipTask = { project ->
   
   project.tasks.whenTaskAdded { task ->
         def name = task.name.toLowerCase()
-        if (name.contains("testdriversharedlibrary") || name.contains("testdriverstaticlibrary")) {
+        if (name.contains("$driverreplacelower$sharedlibrary") || name.contains("$driverreplacelower$sharedlibrary")) {
             project.JavaZip.dependsOn task
         }
     }
