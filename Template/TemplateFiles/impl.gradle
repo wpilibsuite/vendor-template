@@ -1,3 +1,4 @@
+defineHALProperties()
 defineWpiLibProperties()
 
 def $implreplace$SetupModel = { project ->
@@ -6,12 +7,11 @@ def $implreplace$SetupModel = { project ->
             $implreplace$(NativeLibrarySpec) {
                 targetPlatform 'arm'
                 setupDefines(project, binaries)
-                
-                
+
                 binaries.all {
                   tasks.withType(CppCompile) {
-                    addUserLinks(linker, targetPlatform, true)
-                    addWpilibLibraryLinks(it, linker, targetPlatform, true)
+                    addHalLibraryLinks(it, linker, targetPlatform)
+                    addWpilibLibraryLinks(it, linker, targetPlatform)
                   }
                 }
 
@@ -22,7 +22,7 @@ def $implreplace$SetupModel = { project ->
                             includes = ["**/*.cpp"]
                         }
                         exportedHeaders {
-                            srcDirs = ["${rootDir}/include", "${rootDir}/libraries/$driverreplace$/include", "${rootDir}/libraries/$implreplace$/include", wpilibInclude]
+                            srcDirs = ["${rootDir}/include", "${rootDir}/libraries/$driverreplace$/include", "${rootDir}/libraries/$implreplace$/include", wpilibInclude, halInclude]
                             includes = ['**/*.h']
                         }
                         lib project: ':arm:$driverreplace$', library: '$driverreplace$', linkage: 'static'

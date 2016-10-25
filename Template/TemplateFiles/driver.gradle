@@ -6,13 +6,11 @@ def $driverreplace$SetupModel = { project ->
             $driverreplace$(NativeLibrarySpec) {
                 targetPlatform 'arm'
                 setupDefines(project, binaries)
-                
-                
 
                 binaries.all {
                   tasks.withType(CppCompile) {
                     addUserLinks(linker, targetPlatform, false)
-                    addWpilibLibraryLinks(it, linker, targetPlatform, false)
+                    addHalLibraryLinks(it, linker, targetPlatform)
                   }
                 }
 
@@ -30,7 +28,7 @@ def $driverreplace$SetupModel = { project ->
                             includes = ["**/*.cpp",]
                         }
                         exportedHeaders {
-                            srcDirs = ["${rootDir}/$driverreplace$/include", "${rootDir}/libraries/$driverreplace$/include", wpilibInclude]
+                            srcDirs = ["${rootDir}/$driverreplace$/include", "${rootDir}/libraries/$driverreplace$/include", halInclude]
                             if (includeJava) {
                                 project.jniHeaders$implreplace$.outputs.files.each { file ->
                                     srcDirs file.getPath()
