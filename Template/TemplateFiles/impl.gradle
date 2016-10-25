@@ -23,11 +23,11 @@ def $implreplace$SetupModel = { project ->
                 sources {
                     cpp {
                         source {
-                            srcDirs = ["${rootDir}/src"]
+                            srcDirs = ["${rootDir}/$implreplace$/src"]
                             includes = ["**/*.cpp"]
                         }
                         exportedHeaders {
-                            srcDirs = ["${rootDir}/include", "${rootDir}/libraries/$driverreplace$/include", "${rootDir}/libraries/$implreplace$/include", wpilibInclude, halInclude, wpiUtilInclude, netTablesInclude]
+                            srcDirs = ["${rootDir}/$implreplace$/include", "${rootDir}/libraries/$driverreplace$/include", "${rootDir}/libraries/$implreplace$/include", wpilibInclude, halInclude, wpiUtilInclude, netTablesInclude]
                             includes = ['**/*.h']
                         }
                         lib project: ':arm:$driverreplace$', library: '$driverreplace$', linkage: 'static'
@@ -47,7 +47,7 @@ def $implreplace$ZipTask = { pjt ->
         duplicatesStrategy = 'exclude'
 
         // Copy include files from project
-        from(file('include')) {
+        from(file('$implreplace$/include')) {
             into 'include'
         }
 
@@ -94,22 +94,18 @@ def $implreplace$ZipTask = { pjt ->
             include '*.a*'
             into 'lib'
         }
+        
+        from (file('$driverreplace$/include')) {
+            into 'include'
+            // We don't want to include any of the .cpp files that are in some of the header directories
+            exclude '**/*.cpp'
+        }
 
         // Include the static library file from $driverreplace$ project
         def hal = project(':arm:$driverreplace$')
         hal.model{
             binaries{
                 withType(StaticLibraryBinarySpec) { spec ->
-                    spec.headerDirs.each {
-                        if (!it.toString().contains("build\\wpilib") && !it.toString().contains("build/wpilib") 
-                        && !it.toString().contains("arm\\$driverreplace$\\build\\include") && !it.toString().contains("arm/$driverreplace$/build/include") ) {
-                          from(it) {
-                              into 'include'
-                              // We don't want to include any of the .cpp files that are in some of the header directories
-                              exclude '**/*.cpp'
-                          }
-                        }
-                    }
                     from(spec.staticLibraryFile) {
                         into 'lib'
                     }
@@ -147,11 +143,11 @@ task $implreplace$SourceZip(type: Zip) {
     classifier = "cppsources"
     duplicatesStrategy = 'exclude'
 
-    from('src') {
+    from('$implreplace$/src') {
         into 'src'
     }
 
-    from('include') {
+    from('$implreplace$/include') {
         into 'include'
     }
 }

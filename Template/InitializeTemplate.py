@@ -70,15 +70,15 @@ jni_files_to_copy = {
         join(java_withJNI_location, 'implJNI.cpp') : join(join('java', 'lib'), project_name + 'JNI.cpp'),
         join(c_source_with_driver, 'SampleDriver.h') : join(join(driver_name, 'include'), 'SampleDriver.h'),
         join(c_source_with_driver, 'SampleDriver.cpp') : join(join(driver_name, 'src'), 'SampleDriver.cpp'),
-        join(c_source_with_driver, 'Sample.h') : join('include', 'Sample.h'),
-        join(c_source_with_driver, 'Sample.cpp') : join('src', 'Sample.cpp'),
+        join(c_source_with_driver, 'Sample.h') : join(join(project_name, 'include'), 'Sample.h'),
+        join(c_source_with_driver, 'Sample.cpp') : join(join(project_name, 'src'), 'Sample.cpp'),
     }
 
 non_jni_files_to_copy = {
         join(java_withoutJNI_location, 'java.gradle') : join('java', 'java.gradle'),
         join(java_withoutJNI_location, 'Sample.java') : join(java_package_dir, 'Sample.java'),
-        join(c_source_without_driver, 'Sample.h') : join('include', 'Sample.h'),
-        join(c_source_without_driver, 'Sample.cpp') : join('src', 'Sample.cpp'),
+        join(c_source_without_driver, 'Sample.h') : join(join(project_name, 'include'), 'Sample.h'),
+        join(c_source_without_driver, 'Sample.cpp') : join(join(project_name, 'src'), 'Sample.cpp'),
     }
 
 files_to_copy = {

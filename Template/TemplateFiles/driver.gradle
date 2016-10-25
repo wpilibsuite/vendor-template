@@ -223,7 +223,7 @@ task $driverreplace$SourceZip(type: Zip) {
     description = 'Creates a sources-zip of the $driverreplace$ source files'
     group = 'WPILib'
     destinationDir = releaseDir
-    baseName = '$driverreplace$'
+    baseName = '$implreplace$'
     classifier = "driversources"
     duplicatesStrategy = 'exclude'
 
