@@ -46,6 +46,7 @@
 /native
 /arm
 /gmock/build
+/release
 
 
 # Created by https://www.gitignore.io/api/intellij,eclipse,netbeans,java,gradle,c++,cmake
