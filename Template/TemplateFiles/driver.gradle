@@ -1,4 +1,5 @@
-defineWpiLibProperties()
+defineWpiUtilProperties()
+defineHALProperties()
 
 def $driverreplace$SetupModel = { project ->
     project.model {
@@ -8,10 +9,11 @@ def $driverreplace$SetupModel = { project ->
                 setupDefines(project, binaries)
 
                 binaries.all {
-                  tasks.withType(CppCompile) {
-                    addUserLinks(linker, targetPlatform, false)
-                    addHalLibraryLinks(it, linker, targetPlatform)
-                  }
+                    tasks.withType(CppCompile) {
+                        addUserLinks(linker, targetPlatform, false)
+                        addWpiUtilLibraryLinks(it, linker, targetPlatform)
+                        addHalLibraryLinks(it, linker, targetPlatform)
+                    }
                 }
 
                 if (includeJava) {
@@ -28,7 +30,7 @@ def $driverreplace$SetupModel = { project ->
                             includes = ["**/*.cpp",]
                         }
                         exportedHeaders {
-                            srcDirs = ["${rootDir}/$driverreplace$/include", "${rootDir}/libraries/$driverreplace$/include", halInclude]
+                            srcDirs = ["${rootDir}/$driverreplace$/include", "${rootDir}/libraries/$driverreplace$/include", halInclude, wpiUtilInclude]
                             if (includeJava) {
                                 project.jniHeaders$implreplace$.outputs.files.each { file ->
                                     srcDirs file.getPath()
@@ -44,39 +46,42 @@ def $driverreplace$SetupModel = { project ->
 }
 
 
-def $driverreplace$ZipTask = { pjt ->
-    pjt.ext.$driverreplace$Zip = pjt.tasks.create("$driverreplace$Zip", Zip) {
-        description = 'Creates platform-specific zip of the desktop $driverreplace$ libraries.'
+def $driverreplace$ZipTask = { project ->
+    project.ext.$driverreplace$Zip = project.tasks.create("$driverreplace$Zip", Zip) {
+        description = 'Creates zip of the desktop $driverreplace$ libraries.'
         group = 'WPILib'
         destinationDir = releaseDir
         baseName = '$implreplace$-driver'
         duplicatesStrategy = 'exclude'
 
+        // Include driver include files
         from(file('$driverreplace$/include')) {
             into 'include'
         }
 
-        if (!pjt.hasProperty('skipJava')) {
-            pjt.jniHeaders$implreplace$.outputs.each {
+        // Include JNI headers
+        if (!project.hasProperty('skipJava')) {
+            project.jniHeaders$implreplace$.outputs.each {
                 from(it) {
                     into 'include'
                 }
             }
         }
         
-        // Copy all library files
+        // Copy included library headers
         from(file('libraries/$driverreplace$/include')) {
             into 'include'
         }
         
+        // Copy included library binaries
         from(file('libraries/$driverreplace$/lib')) {
-          include '*.so*'
-          include '*.a*'
-          into 'lib'
+            include '*.so*'
+            include '*.a*'
+            into 'lib'
         }
         
-
-        pjt.model {
+        // Copy static and shared libraries from this project
+        project.model {
             binaries {
                 withType(StaticLibraryBinarySpec) { binary ->
                     from(binary.staticLibraryFile) {
@@ -89,76 +94,81 @@ def $driverreplace$ZipTask = { pjt ->
                     }
                     def debugFile = new File(binary.sharedLibraryFile.absolutePath + ".debug")
                     from(debugFile) {
-                      into 'lib'
+                        into 'lib'
                     }
                 }
             }
         }
     }
 
-    pjt.build.dependsOn pjt.$driverreplace$Zip
+    project.build.dependsOn project.$driverreplace$Zip
     
-    pjt.debugStripSetup()
+    project.debugStripSetup()
 
-    pjt.tasks.whenTaskAdded { task ->
+    project.tasks.whenTaskAdded { task ->
         def name = task.name.toLowerCase()
         if (name.contains("$driverreplacelower$sharedlibrary") || name.contains("$driverreplacelower$staticlibrary")) {
-            pjt.$driverreplace$Zip.dependsOn task
+            project.$driverreplace$Zip.dependsOn task
         }
     }
 }
 
 def JavaZipTask = { project ->
-  project.ext.JavaZip = project.tasks.create("JavaZip", Zip) {
-    description = 'Creates a zip of the Java libraries.'
-    group = 'WPILib'
-    destinationDir = releaseDir
-    baseName = '$implreplace$-java'
-    duplicatesStrategy = 'exclude'
-    dependsOn { project.jar }
-    dependsOn { project.$implreplace$Javadoc }
-    
-    project.model {
-      binaries {
-        withType(SharedLibraryBinarySpec) { binary ->
-          from(binary.sharedLibraryFile) {
-            into '/'
-          }
-          def debugFile = new File(binary.sharedLibraryFile.absolutePath + ".debug")
-          from(debugFile) {
-            into '/'
-          }
-        }
-      }
-    }
+    project.ext.JavaZip = project.tasks.create("JavaZip", Zip) {
+        description = 'Creates a zip of the Java libraries.'
+        group = 'WPILib'
+        destinationDir = releaseDir
+        baseName = '$implreplace$-java'
+        duplicatesStrategy = 'exclude'
+        dependsOn { project.jar }
+        dependsOn { project.$implreplace$Javadoc }
         
-    from(file('libraries/$driverreplace$/lib')) {
-      include '*.so*'
-      into '/'
-    }
-    
-    from(file('libraries/java')) {
-      into '/'
-    } 
-    
-    from project.jar.outputs.files {
-      include '*.jar'
-      include '*.so*'
-      into '/'
-    }
+        // Include shared binaries from this project
+        project.model {
+            binaries {
+                withType(SharedLibraryBinarySpec) { binary ->
+                    from(binary.sharedLibraryFile) {
+                        into '/'
+                    }
+                    def debugFile = new File(binary.sharedLibraryFile.absolutePath + ".debug")
+                    from(debugFile) {
+                        into '/'
+                    }
+                }
+            }
+        }
 
-    from project.$implreplace$Javadoc.outputs.files {
-      include '*.jar'
-      include '*.so*'
-      into '/'
+        // Copy included library binaries
+        from(file('libraries/$driverreplace$/lib')) {
+            include '*.so*'
+            into '/'
+        }
+        
+        // Copy included java binaries
+        from(file('libraries/java')) {
+            into '/'
+        } 
+        
+        // Copy project java binary
+        from project.jar.outputs.files {
+            include '*.jar'
+            include '*.so*'
+            into '/'
+        }
+
+        // Copy project java javadocs
+        from project.$implreplace$Javadoc.outputs.files {
+            include '*.jar'
+            include '*.so*'
+            into '/'
+        }
     }
-  }
-  
-  project.build.dependsOn project.JavaZip
-  
-  project.debugStripSetup()
-  
-  project.tasks.whenTaskAdded { task ->
+    
+    project.build.dependsOn project.JavaZip
+    
+    project.debugStripSetup()
+    
+    project.tasks.whenTaskAdded { task ->
         def name = task.name.toLowerCase()
         if (name.contains("$driverreplacelower$sharedlibrary") || name.contains("$driverreplacelower$sharedlibrary")) {
             project.JavaZip.dependsOn task
@@ -167,26 +177,26 @@ def JavaZipTask = { project ->
 }
 
 def JavaSourceZipTask = { project ->
-  project.ext.JavaZip = project.tasks.create("JavaSourceZip", Zip) {
-    description = 'Creates a zip of the Java sources.'
-    group = 'WPILib'
-    destinationDir = releaseDir
-    baseName = '$implreplace$-javasources'
-    duplicatesStrategy = 'exclude'
-    dependsOn { project.$implreplace$JavaSource }
+    project.ext.JavaZip = project.tasks.create("JavaSourceZip", Zip) {
+      description = 'Creates a zip of the Java sources.'
+      group = 'WPILib'
+      destinationDir = releaseDir
+      baseName = '$implreplace$-javasources'
+      duplicatesStrategy = 'exclude'
+      dependsOn { project.$implreplace$JavaSource }
 
-    from project.$implreplace$JavaSource.outputs.files {
-      include '*.jar'
-      include '*.so*'
-      into '/'
+      from project.$implreplace$JavaSource.outputs.files {
+          include '*.jar'
+          include '*.so*'
+          into '/'
+      }
     }
-  }
-  
-  project.build.dependsOn project.JavaZip
-  
-  project.debugStripSetup()
-  
-  project.tasks.whenTaskAdded { task ->
+    
+    project.build.dependsOn project.JavaZip
+    
+    project.debugStripSetup()
+    
+    project.tasks.whenTaskAdded { task ->
         def name = task.name.toLowerCase()
         if (name.contains("$driverreplacelower$sharedlibrary") || name.contains("$driverreplacelower$sharedlibrary")) {
             project.JavaZip.dependsOn task
@@ -195,18 +205,18 @@ def JavaSourceZipTask = { project ->
 }
 
 project(':arm:$driverreplace$') {
-  apply plugin: 'cpp'
+    apply plugin: 'cpp'
 
-  apply from: "${rootDir}/toolchains/arm.gradle"
+    apply from: "${rootDir}/toolchains/arm.gradle"
 
-  if (includeJava) {
-    apply from: "${rootDir}/java/java.gradle"
-  }
+    if (includeJava) {
+        apply from: "${rootDir}/java/java.gradle"
+    }
 
-  $driverreplace$SetupModel(project)
-  $driverreplace$ZipTask(project)
-  JavaZipTask(project)
-  JavaSourceZipTask(project)
+    $driverreplace$SetupModel(project)
+    $driverreplace$ZipTask(project)
+    JavaZipTask(project)
+    JavaSourceZipTask(project)
 }
 
 task $driverreplace$SourceZip(type: Zip) {

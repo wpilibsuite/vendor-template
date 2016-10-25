@@ -31,185 +31,57 @@ ext.getPlatformPath = { binary ->
 
 ext.setupDefines = { project, binaries ->
     binaries.all {
-	if (project.hasProperty('debug')) {
-	    project.setupDebugDefines(cppCompiler, linker)
-	} else {
-	    project.setupReleaseDefines(cppCompiler, linker)
-	}
-  }
+        if (project.hasProperty('debug')) {
+            project.setupDebugDefines(cppCompiler, linker)
+        } else {
+            project.setupReleaseDefines(cppCompiler, linker)
+        }
+    }
 }
 
 ext.addUserLinks = { linker, targetPlatform, implLib ->
-  def libPattern = /.*((\\/|\\).*)+lib(?<libName>.+).(.+)$/
-  def libraryArgs = []
-  def libraryPath = file('libraries/$driverreplace$/lib').path
+    def libPattern = /.*((\\/|\\).*)+lib(?<libName>.+).(.+)$/
+    def libraryArgs = []
+    def libraryPath = file('libraries/$driverreplace$/lib').path
 
-  // adds all libraries found in the driver folder
-  def libraryTree = fileTree(libraryPath)
-  libraryTree.include '*.so'
-  libraryTree.include '*.a'
+    // adds all libraries found in the driver folder
+    def libraryTree = fileTree(libraryPath)
+    libraryTree.include '*.so'
+    libraryTree.include '*.a'
 
-  libraryTree.each { lib ->
-    def nameMatcher = (lib.path =~ libPattern)
-    if (nameMatcher[0].size() > 1) {
-      def name = nameMatcher.group('libName')
-      libraryArgs << '-l' + name
-    }
-  }
-  
-  if (implLib) {
-    // adds all libraries found in the impl folder
-    def implLibraryPath = file('libraries/$implreplace$/lib').path
-    def implLibraryTree = fileTree(implLibraryPath)
-    implLibraryTree.include '*.so'
-    implLibraryTree.include '*.a'
-
-    implLibraryTree.each { lib ->
-      def nameMatcher = (lib.path =~ libPattern)
-      if (nameMatcher[0].size() > 1) {
-        def name = nameMatcher.group('libName')
-        libraryArgs << '-l' + name
-      }
-    }
-  }
-   
-  // Add all arguments
-  String architecture = targetPlatform.architecture
-  if (architecture.contains('arm')){
-    linker.args << '-L' + libraryPath
-    linker.args.addAll(libraryArgs)
-  }
-}
-
-def halUnzipLocation = "$buildDir/hal"
-
-task downloadHAL() {
-    description = 'Downloads the C++ ARM HAL maven dependency.'
-
-    group = 'WPILib'
-    def depFolder = "$buildDir/dependencies"
-    def libZip = file("$depFolder/hal.zip")
-    outputs.file(libZip)
-    def armHal
-    
-
-    doFirst {
-        def armHALDependency = project.dependencies.create("edu.wpi.first.wpilib.cmake:cpp-root:2017.1.+:hal@zip")
-        def armHALConfig = project.configurations.detachedConfiguration(armHALDependency)
-        armHALConfig.setTransitive(false)
-        armHal = armHALConfig.files[0].canonicalFile
-    }
-
-    doLast {
-        copy {
-            from armHal
-            rename 'cpp-root(.+)hal(.+)', 'hal.zip'
-            into depFolder
+    libraryTree.each { lib ->
+        def nameMatcher = (lib.path =~ libPattern)
+        if (nameMatcher[0].size() > 1) {
+            def name = nameMatcher.group('libName')
+            libraryArgs << '-l' + name
         }
     }
-}
-
-// Create a task that will unzip the hal files into a temporary build directory
-task unzipHAL(type: Copy) {
-    description = 'Unzips the hal maven dependency so that the include files and libraries can be used'
-    group = 'WPILib'
-    dependsOn downloadHAL
     
-    from zipTree(downloadHAL.outputs.files.singleFile)
-    into halUnzipLocation
-}
+    if (implLib) {
+        // adds all libraries found in the impl folder
+        def implLibraryPath = file('libraries/$implreplace$/lib').path
+        def implLibraryTree = fileTree(implLibraryPath)
+        implLibraryTree.include '*.so'
+        implLibraryTree.include '*.a'
 
-ext.defineHALProperties = {
-  ext.hal = halUnzipLocation
-  ext.halInclude = "$halUnzipLocation/include"
-  ext.halLocation = "$halUnzipLocation/lib"
-  ext.halSharedLib = "$halLocation/libHALAthena.so"
-  ext.wpiUtilStaticLib = "$halLocation/libwpiutil.a"
-  
-  ext.addHalLibraryLinks = { compileTask, linker, targetPlatform ->
-    compileTask.dependsOn project(':').unzipHAL
-    String architecture = targetPlatform.architecture
-    if (architecture.contains('arm')) {
-      // Grab all the shared libraries and link them
-      linker.args halSharedLib
-      linker.args wpiUtilStaticLib
-      
-      linker.args "$halLocation/libnilibraries.so"
-
-      def libraryPath = halLocation
-
-      linker.args << '-L' + libraryPath
-
-    }
-  }
-}
-
-def wpilibUnzipLocation = "$buildDir/wpilib"
-
-task downloadWpilib() {
-    description = 'Downloads the C++ ARM wpilib maven dependency.'
-
-    group = 'WPILib'
-    def depFolder = "$buildDir/dependencies"
-    def libZip = file("$depFolder/cpp-root.zip")
-    outputs.file(libZip)
-    def armWPILib
-    
-
-    doFirst {
-        def armWpiUtilDependency = project.dependencies.create("edu.wpi.first.wpilib.cmake:cpp-root:2017.1.+")
-        def armWpiUtilConfig = project.configurations.detachedConfiguration(armWpiUtilDependency)
-        armWpiUtilConfig.setTransitive(false)
-        armWPILib = armWpiUtilConfig.files[0].canonicalFile
-    }
-
-    doLast {
-        copy {
-            from armWPILib
-            rename 'cpp-root(.+)', 'cpp-root.zip'
-            into depFolder
+        implLibraryTree.each { lib ->
+            def nameMatcher = (lib.path =~ libPattern)
+            if (nameMatcher[0].size() > 1) {
+                def name = nameMatcher.group('libName')
+                libraryArgs << '-l' + name
+            }
         }
     }
-}
-
-// Create a task that will unzip the wpilib files into a temporary build directory
-task unzipWpilib(type: Copy) {
-    description = 'Unzips the wpilib maven dependency so that the include files and libraries can be used'
-    group = 'WPILib'
-    dependsOn downloadWpilib
-    
-    from zipTree(downloadWpilib.outputs.files.singleFile)
-    into wpilibUnzipLocation
-}
-
-task clean(type: Delete) {
-    description = "Deletes the build directory"
-    group = "Build"
-    delete buildDir
-}
-
-ext.defineWpiLibProperties = {
-  ext.wpilib = wpilibUnzipLocation
-  ext.wpilibInclude = "$wpilibUnzipLocation/include"
-  ext.wpilibLocation = "$wpilibUnzipLocation/lib"
-  ext.wpilibStaticLib = "$wpilibLocation/libwpilib_nonshared.a"
-  ext.ntcoreSharedLib = "$wpilibLocation/libntcore.so"
-  
-  ext.addWpilibLibraryLinks = { compileTask, linker, targetPlatform ->
-    compileTask.dependsOn project(':').unzipWpilib
+     
+    // Add all arguments
     String architecture = targetPlatform.architecture
-    if (architecture.contains('arm')) {
-      // Grab all the shared libraries and link them
-      linker.args ntcoreSharedLib
-      linker.args wpilibStaticLib
-
-      def libraryPath = wpilibLocation
-
-      linker.args << '-L' + libraryPath
-
+    if (architecture.contains('arm')){
+        linker.args << '-L' + libraryPath
+        linker.args.addAll(libraryArgs)
     }
-  }
 }
+
+apply from: "dependencies.gradle"
 
 ext.releaseDir = file("${rootDir}/release")
 apply from: "$implreplace$.gradle"
@@ -221,6 +93,12 @@ task build
 
 build.dependsOn $implreplace$SourceZip
 build.dependsOn $driverreplace$SourceZip
+
+task clean(type: Delete) {
+    description = "Deletes the build directory"
+    group = "Build"
+    delete buildDir
+}
 
 clean {
     delete releaseDir

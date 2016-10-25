@@ -22,8 +22,8 @@ sourceSets {
     }
     
 dependencies {
-     compile 'edu.wpi.first.wpilibj:wpilibJavaFinal:2017.+'
-     runtime 'edu.wpi.first.wpilibj:wpilibJavaFinal:2017.+'
+     compile 'edu.wpi.first.wpilibj:athena:2017.+'
+     runtime 'edu.wpi.first.wpilibj:athena:2017.+'
      compile fileTree(dir: "${rootDir}/libraries/java", include: ['*.jar'])
      runtime fileTree(dir: "${rootDir}/libraries/java", include: ['*.jar'])
 }

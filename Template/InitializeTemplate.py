@@ -86,6 +86,7 @@ files_to_copy = {
         join(template_location, 'driver.gradle') : driver_name + '.gradle',
         join(template_location, 'settings.gradle') : 'settings.gradle',
         join(template_location, 'build.gradle') : 'build.gradle',
+        join(template_location, 'dependencies.gradle') : 'dependencies.gradle',
     }
 
 for key,value in files_to_copy.items():

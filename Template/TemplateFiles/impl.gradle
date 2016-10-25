@@ -1,4 +1,6 @@
+defineWpiUtilProperties()
 defineHALProperties()
+defineNetworkTablesProperties()
 defineWpiLibProperties()
 
 def $implreplace$SetupModel = { project ->
@@ -9,10 +11,13 @@ def $implreplace$SetupModel = { project ->
                 setupDefines(project, binaries)
 
                 binaries.all {
-                  tasks.withType(CppCompile) {
-                    addHalLibraryLinks(it, linker, targetPlatform)
-                    addWpilibLibraryLinks(it, linker, targetPlatform)
-                  }
+                    tasks.withType(CppCompile) {
+                        addUserLinks(linker, targetPlatform, false)
+                        addHalLibraryLinks(it, linker, targetPlatform)
+                        addWpiUtilLibraryLinks(it, linker, targetPlatform)
+                        addNetworkTablesLibraryLinks(it, linker, targetPlatform)
+                        addWpilibLibraryLinks(it, linker, targetPlatform)
+                    }
                 }
 
                 sources {
@@ -22,7 +27,7 @@ def $implreplace$SetupModel = { project ->
                             includes = ["**/*.cpp"]
                         }
                         exportedHeaders {
-                            srcDirs = ["${rootDir}/include", "${rootDir}/libraries/$driverreplace$/include", "${rootDir}/libraries/$implreplace$/include", wpilibInclude, halInclude]
+                            srcDirs = ["${rootDir}/include", "${rootDir}/libraries/$driverreplace$/include", "${rootDir}/libraries/$implreplace$/include", wpilibInclude, halInclude, wpiUtilInclude, netTablesInclude]
                             includes = ['**/*.h']
                         }
                         lib project: ':arm:$driverreplace$', library: '$driverreplace$', linkage: 'static'
@@ -41,10 +46,12 @@ def $implreplace$ZipTask = { pjt ->
         baseName = '$implreplace$-cpp'
         duplicatesStrategy = 'exclude'
 
+        // Copy include files from project
         from(file('include')) {
             into 'include'
         }
 
+        // Copy shared and static binaries from this project
         pjt.model {
             binaries {
                 withType(StaticLibraryBinarySpec) { binary ->
@@ -64,28 +71,31 @@ def $implreplace$ZipTask = { pjt ->
             }
         }
         
-        // Copy all library files
+        /// Copy included driver library headers
         from(file('libraries/$driverreplace$/include')) {
             into 'include'
         }
         
+        // Copy included driver library binaries
         from(file('libraries/$driverreplace$/lib')) {
-          include '*.so*'
-          include '*.a*'
-          into 'lib'
+            include '*.so*'
+            include '*.a*'
+            into 'lib'
         }
         
+        // Copy included library headers
         from(file('libraries/$implreplace$/include')) {
             into 'include'
         }
         
+        // Copy included library binaries
         from(file('libraries/$implreplace$/lib')) {
-          include '*.so*'
-          include '*.a*'
-          into 'lib'
+            include '*.so*'
+            include '*.a*'
+            into 'lib'
         }
 
-        // Include the static library file and shared library object from $driverreplace$ project
+        // Include the static library file from $driverreplace$ project
         def hal = project(':arm:$driverreplace$')
         hal.model{
             binaries{
@@ -121,12 +131,12 @@ def $implreplace$ZipTask = { pjt ->
 }
 
 project(':arm:$implreplace$') {
-  apply plugin: 'cpp'
+    apply plugin: 'cpp'
 
-  apply from: "${rootDir}/toolchains/arm.gradle"
+    apply from: "${rootDir}/toolchains/arm.gradle"
 
-  $implreplace$SetupModel(project)
-  $implreplace$ZipTask(project)
+    $implreplace$SetupModel(project)
+    $implreplace$ZipTask(project)
 }
 
 task $implreplace$SourceZip(type: Zip) {
