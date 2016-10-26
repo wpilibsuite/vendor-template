@@ -16,6 +16,8 @@ Gradle is the main build system used by this template. All tasks are run with th
 ./gradlew build
 ```
 
+The template will automatically grab the newest version of WPILib and all of it's dependancies to ensure the buiild is compatable with the lastest images and plugins
+
 ## Setting up the repository
 In order to properly set up the repository, a file called InitializeTemplate.py is provided. Running this will ask for 3 questions. The first is a project name (ex. CANJaguar, ADXRS535). The second is a java package to place the code into. The 3rd is asking if you require JNI. If there is functionality you need that is not provided by WPILib but can be accessed using either the HAL or native code, that is when to use JNI.
 
