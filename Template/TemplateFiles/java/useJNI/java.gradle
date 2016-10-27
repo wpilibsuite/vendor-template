@@ -22,10 +22,12 @@ sourceSets {
     }
     
 dependencies {
-     compile 'edu.wpi.first.wpilibj:athena:2017.+'
-     runtime 'edu.wpi.first.wpilibj:athena:2017.+'
-     compile fileTree(dir: "${rootDir}/libraries/java", include: ['*.jar'])
-     runtime fileTree(dir: "${rootDir}/libraries/java", include: ['*.jar'])
+    compile 'edu.wpi.first.wpilibj:athena:2017.+'
+    runtime 'edu.wpi.first.wpilibj:athena:2017.+'
+    compile 'edu.wpi.first.wpilib.networktables.java:NetworkTables:+:arm'
+    runtime 'edu.wpi.first.wpilib.networktables.java:NetworkTables:+:arm'
+    compile fileTree(dir: "${rootDir}/libraries/java", include: ['*.jar'])
+    runtime fileTree(dir: "${rootDir}/libraries/java", include: ['*.jar'])
 }
 
 jar {
