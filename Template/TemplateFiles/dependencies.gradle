@@ -206,14 +206,14 @@ ext.defineWpiLibProperties = {
     ext.wpilib = wpilibUnzipLocation
     ext.wpilibInclude = "$wpilibUnzipLocation/include"
     ext.wpilibLocation = "$wpilibUnzipLocation/lib"
-    ext.wpilibStaticLib = "$wpilibLocation/libwpilib_nonshared.a"
+    ext.wpilibSharedLib = "$wpilibLocation/libwpilibc.so"
     
     ext.addWpilibLibraryLinks = { compileTask, linker, targetPlatform ->
         compileTask.dependsOn project(':').unzipWpilib
         String architecture = targetPlatform.architecture
         if (architecture.contains('arm')) {
             // Grab all the shared libraries and link them
-            linker.args wpilibStaticLib
+            linker.args wpilibSharedLib
 
             def libraryPath = wpilibLocation
 
