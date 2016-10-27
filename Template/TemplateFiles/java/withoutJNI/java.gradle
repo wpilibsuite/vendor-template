@@ -19,7 +19,7 @@ sourceSets {
             srcDirs = ["${rootDir}/java/src"]
         }
     }
-    }
+}
     
 dependencies {
     compile 'edu.wpi.first.wpilibj:athena:2017.+'
@@ -41,29 +41,6 @@ jar {
 project.tasks.whenTaskAdded { task ->
         if (task.name == '$implreplace$SharedLibrary') jar.dependsOn task
 }
-
-task $implreplace$JavaSource(type: Jar, dependsOn: classes) {
-    description = 'Generates the source jar for $implreplace$ java'
-    group = 'WPILib'
-    baseName = '$implreplace$'
-    classifier = "sources"
-    duplicatesStrategy = 'exclude'
-
-    from sourceSets.main.allJava
-}
-
-task $implreplace$Javadoc(type: Jar, dependsOn: javadoc) {
-    description = 'Generates the javadoc jar for $implreplace$ java'
-    group = 'WPILib'
-    baseName = '$implreplace$'
-    classifier = "javadoc"
-    duplicatesStrategy = 'exclude'
-
-    from javadoc.destinationDir
-}
-
-build.dependsOn $implreplace$JavaSource
-build.dependsOn $implreplace$Javadoc
 
 /**
  * Generates the JNI headers
