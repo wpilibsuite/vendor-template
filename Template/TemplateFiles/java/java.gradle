@@ -36,6 +36,16 @@ jar {
     duplicatesStrategy = 'exclude'
 
     dependsOn { classes }
+
+    doFirst {
+    // Add all dependancies that are not wpilib based if we are including the classpath
+    if (embedJavaLibraries) {
+        configurations.compile.findAll { 
+            if (!it.toString().contains('edu.wpi.first.wpilib')) {
+                from it.isDirectory() ? it : zipTree(it) } 
+            }
+        }
+    }
 }
 
 /**

@@ -72,27 +72,27 @@ task userSharedZip(type: Zip) {
   // Copy included driver library headers
   from(file(driverLibraryInclude)) {
       include '*.h'
-      into 'include'
+      into '/cpp/include'
   }
   
   // Copy included driver library binaries
   from(file(driverLibraryLib)) {
       include '*.so*'
       include '*.a*'
-      into 'lib'
+      into '/cpp/lib'
   }
   
   // Copy included driver library headers
   from(file(cppLibraryInclude)) {
       include '*.h'
-      into 'include'
+      into '/cpp/include'
   }
   
   // Copy included driver library binaries
   from(file(cppLibraryLib)) {
       include '*.so*'
       include '*.a*'
-      into 'lib'
+      into '/cpp/lib'
   }
 
   // Include java jar
@@ -212,27 +212,27 @@ task userStaticZip(type: Zip) {
   // Copy included driver library headers
   from(file(driverLibraryInclude)) {
       include '*.h'
-      into 'include'
+      into '/cpp/include'
   }
   
   // Copy included driver library binaries
   from(file(driverLibraryLib)) {
       include '*.so*'
       include '*.a*'
-      into 'lib'
+      into '/cpp/lib'
   }
   
   // Copy included driver library headers
   from(file(cppLibraryInclude)) {
       include '*.h'
-      into 'include'
+      into '/cpp/include'
   }
   
   // Copy included driver library binaries
   from(file(cppLibraryLib)) {
       include '*.so*'
       include '*.a*'
-      into 'lib'
+      into '/cpp/lib'
   }
 
   // Include java jar
