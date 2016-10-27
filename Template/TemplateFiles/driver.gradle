@@ -192,8 +192,6 @@ def JavaSourceZipTask = { project ->
     
     project.build.dependsOn project.JavaZip
     
-    project.debugStripSetup()
-    
     project.tasks.whenTaskAdded { task ->
         def name = task.name.toLowerCase()
         if (name.contains("$driverreplacelower$sharedlibrary") || name.contains("$driverreplacelower$sharedlibrary")) {

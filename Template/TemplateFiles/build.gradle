@@ -84,8 +84,8 @@ ext.addUserLinks = { linker, targetPlatform, implLib ->
 apply from: "dependencies.gradle"
 
 ext.releaseDir = file("${rootDir}/release")
-apply from: "$implreplace$.gradle"
 apply from: "$driverreplace$.gradle"
+apply from: "$implreplace$.gradle"
 
 // Empty task for build so that ntcoreSourceZip and $driverreplace$SourceZip will be
 // built when running ./gradlew build
