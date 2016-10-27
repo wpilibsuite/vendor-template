@@ -126,6 +126,202 @@ def $implreplace$ZipTask = { pjt ->
     }
 }
 
+def userZipSharedTask = { pjt ->
+    pjt.ext.userZipShared = pjt.tasks.create("userZipShared", Zip) {
+        description = 'Creates user zip of libraries, with shared c++ libs.'
+        group = 'WPILib'
+        destinationDir = releaseDir
+        baseName = '$implreplace$-usershared'
+        duplicatesStrategy = 'exclude'
+        
+        
+
+        // Copy include files from project
+        from(file('$implreplace$/include')) {
+            include '*.h'
+            into '/cpp/include'
+        }
+
+        // Copy shared binaries from this project
+        pjt.model {
+            binaries {
+                withType(SharedLibraryBinarySpec) { binary ->
+                    from(binary.sharedLibraryFile) {
+                        include '*.so'
+                        into '/cpp/lib'
+                    }
+                    def debugFile = new File(binary.sharedLibraryFile.absolutePath + ".debug")
+                      from(debugFile) {
+                          include '*.so.debug'
+                          into '/cpp/lib'
+                      }
+                }
+            }
+        }
+        
+        // Copy included driver library headers
+        from(file('libraries/$driverreplace$/include')) {
+            include '*.h'
+            into '/cpp/include'
+        }
+        
+        // Copy included driver library binaries
+        from(file('libraries/$driverreplace$/lib')) {
+            include '*.so*'
+            into '/cpp/lib'
+        }
+        
+        // Copy included library headers
+        from(file('libraries/$implreplace$/include')) {
+            include '*.h'
+            into '/cpp/include'
+        }
+        
+        // Copy included library binaries
+        from(file('libraries/$implreplace$/lib')) {
+            include '*.so*'
+            into '/cpp/lib'
+        }
+        
+        from (file('$driverreplace$/include')) {
+            include '*.h'
+            into '/cpp/include'
+        }
+        
+        // Copy project java binary
+        from project(':arm:$driverreplace$').jar.outputs.files {
+            include '*.jar'
+            into '/java/lib'
+        }
+            
+        // Copy shared binaries from this project
+        project(':arm:$driverreplace$').model {
+            binaries {
+                withType(SharedLibraryBinarySpec) { binary ->
+                    from(binary.sharedLibraryFile) {
+                        include '*.so'
+                        into '/java/lib'
+                    }
+                    def debugFile = new File(binary.sharedLibraryFile.absolutePath + ".debug")
+                      from(debugFile) {
+                          include '*.so.debug'
+                          into '/java/lib'
+                      }
+                }
+            }
+        }  
+    }
+
+    pjt.build.dependsOn pjt.userZipShared
+    
+    pjt.userZipShared.dependsOn project('arm:$driverreplace$').jar;
+
+    pjt.tasks.whenTaskAdded { task ->
+        def name = task.name.toLowerCase()
+        if (name.contains("$implreplace$sharedlibrary") || name.contains("$implreplace$staticlibrary") || name.contains("jar")) {
+            pjt.userZipShared.dependsOn task
+        }
+    }
+} 
+
+def userZipStaticTask = { pjt ->
+    pjt.ext.userZipStatic = pjt.tasks.create("userZipStatic", Zip) {
+        description = 'Creates user zip of libraries, with static c++ libs.'
+        group = 'WPILib'
+        destinationDir = releaseDir
+        baseName = '$implreplace$-userstatic'
+        duplicatesStrategy = 'exclude'
+
+        // Copy include files from project
+        from(file('$implreplace$/include')) {
+            include '*.h'
+            into '/cpp/include'
+        }
+
+        // Copy shared binaries from this project
+        pjt.model {
+            binaries {
+                withType(StaticLibraryBinarySpec) { binary ->
+                    from(binary.staticLibraryFile) {
+                        include '*.a'
+                        into '/cpp/lib'
+                    }
+                }
+            }
+        }
+        
+        // Copy included driver library headers
+        from(file('libraries/$driverreplace$/include')) {
+            include '*.h'
+            into '/cpp/include'
+        }
+        
+        // Copy included driver library binaries
+        from(file('libraries/$driverreplace$/lib')) {
+            include '*.so*'
+            into '/cpp/lib'
+        }
+        
+        // Copy included library headers
+        from(file('libraries/$implreplace$/include')) {
+            include '*.h'
+            into '/cpp/include'
+        }
+        
+        // Copy included library binaries
+        from(file('libraries/$implreplace$/lib')) {
+            include '*.so*'
+            into '/cpp/lib'
+        }
+        
+        from (file('$driverreplace$/include')) {
+            include '*.h'
+            into '/cpp/include'
+        }
+        
+        // Copy project java binary
+        from project(':arm:$driverreplace$').jar.outputs.files {
+            include '*.jar'
+            into '/java/lib'
+        }
+            
+            // Copy shared binaries from this project
+        project(':arm:$driverreplace$').model {
+            binaries {
+            
+                withType(StaticLibraryBinarySpec) { binary ->
+                    from(binary.staticLibraryFile) {
+                        include '*.a'
+                        into '/cpp/lib'
+                    }
+                }
+                withType(SharedLibraryBinarySpec) { binary ->
+                    from(binary.sharedLibraryFile) {
+                        include '*.so'
+                        into '/java/lib'
+                    }
+                    def debugFile = new File(binary.sharedLibraryFile.absolutePath + ".debug")
+                      from(debugFile) {
+                          include '*.so.debug'
+                          into '/java/lib'
+                      }
+                }
+            }
+        } 
+    }
+
+    pjt.build.dependsOn pjt.userZipStatic
+    
+    pjt.userZipStatic.dependsOn project('arm:$driverreplace$').jar;
+
+    pjt.tasks.whenTaskAdded { task ->
+        def name = task.name.toLowerCase()
+        if (name.contains("$implreplace$sharedlibrary") || name.contains("$driverreplace$sharedlibrary") || name.contains("$implreplace$staticlibrary") || name.contains("jar")) {
+            pjt.userZipStatic.dependsOn task
+        }
+    }
+} 
+
 project(':arm:$implreplace$') {
     apply plugin: 'cpp'
 
@@ -133,6 +329,8 @@ project(':arm:$implreplace$') {
 
     $implreplace$SetupModel(project)
     $implreplace$ZipTask(project)
+    userZipSharedTask(project)
+    userZipStaticTask(project)
 }
 
 task $implreplace$SourceZip(type: Zip) {
