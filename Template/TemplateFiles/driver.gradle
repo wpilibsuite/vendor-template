@@ -21,7 +21,7 @@ def driverSetupModel = { project ->
                 sources {
                     cpp {
                         source {
-                            srcDirs = [driverSrc, javaJNISrc]
+                            srcDirs = [driverSrc, javaJNISrc, driverLibrarySrc]
                             includes = ["**/*.cpp",]
                         }
                         exportedHeaders {

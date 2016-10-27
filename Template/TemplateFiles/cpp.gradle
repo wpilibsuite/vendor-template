@@ -23,7 +23,7 @@ def cppSetupModel = { project ->
                 sources {
                     cpp {
                         source {
-                            srcDirs = [cppSrc]
+                            srcDirs = [cppSrc, cppLibrarySrc]
                             includes = ["**/*.cpp"]
                         }
                         exportedHeaders {

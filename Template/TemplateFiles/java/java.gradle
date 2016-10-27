@@ -16,7 +16,7 @@ def generatedJNIHeaderLoc = "${buildDir}/include"
 sourceSets {
     main {
         java {
-            srcDirs = [javaSrc]
+            srcDirs = [javaSrc, userSrc]
         }
     }
 }

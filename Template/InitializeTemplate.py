@@ -102,9 +102,12 @@ for key,value in files_to_copy.items():
 
 os.makedirs(join(join('libraries', 'cpp'), 'include'))
 os.makedirs(join(join('libraries', 'cpp'), 'lib'))
+os.makedirs(join(join('libraries', 'cpp'), 'src'))
 os.makedirs(join(join('libraries', 'driver'), 'include'))
 os.makedirs(join(join('libraries', 'driver'), 'lib'))
-os.makedirs(join('libraries', 'java'))
+os.makedirs(join(join('libraries', 'driver'), 'src'))
+os.makedirs(join(join('libraries', 'java'), 'src'))
+os.makedirs(join(join('libraries', 'java'), 'lib'))
 
 if use_jni:
     for key,value in jni_files_to_copy.items():
