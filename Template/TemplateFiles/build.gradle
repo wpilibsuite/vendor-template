@@ -13,6 +13,8 @@ allprojects {
 
 $usedriverreplace$
 
+ext.compilerPrefixToUse = project.hasProperty('compilerPrefix') ? project.compilerPrefix : 'arm-frc-linux-gnueabi-'
+
 ext.setupDefines = { project, binaries ->
     binaries.all {
         if (project.hasProperty('debug')) {

@@ -40,6 +40,48 @@ def cppSetupModel = { project ->
     }
 }
 
+ext.mergeStaticSetup = { pjt ->
+    if (combineStaticLibs && useDriver) {
+        pjt.tasks.whenObjectAdded { task ->
+            def name = task.name.toLowerCase()
+            if (name.contains('create') && name.contains('staticlibrary')) {
+                def libraryPath = task.outputFile.parent
+                def library = file(task.outputFile.absolutePath)
+                project(':arm:driver').model {
+                    binaries {
+                        withType(StaticLibraryBinarySpec) { binary ->
+                            ext.driverLibrary = new File(binary.staticLibraryFile.absolutePath)
+                        }
+                    }
+                }
+                task.doLast {
+                    library.renameTo(file("${library}.m"))
+                    copy {
+                        from driverLibrary
+                        into libraryPath
+                    }
+                    
+                    ByteArrayOutputStream mriFile = new ByteArrayOutputStream()
+                    //def mriFile = new File("${libraryPath}/lib${libraryName}.mri")
+                    mriFile << "create lib${libraryName}.a\n"
+                    mriFile << "addlib lib${libraryName}.a.m\n"
+                    mriFile << "addlib lib${libraryName}Driver.a\n"
+                    mriFile << "save\n"
+                    mriFile << "end\n"
+                    
+                    def stdIn = new ByteArrayInputStream(mriFile.buf)
+                    
+                    exec {
+                        standardInput = stdIn
+                        workingDir = libraryPath
+                        commandLine "${compilerPrefixToUse}ar", '-M'
+                    }
+                }
+            }
+        }
+    }
+}
+
 project(':arm:cpp') {
     apply plugin: 'cpp'
 
@@ -52,4 +94,5 @@ project(':arm:cpp') {
     cppSetupModel(project)
     
     project.debugStripSetup()
+    mergeStaticSetup(project)
 }

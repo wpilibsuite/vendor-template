@@ -1,7 +1,6 @@
 ext.isArm = true
 ext.buildPlatform = 'arm'
 
-def compilerPrefix = project.hasProperty('compilerPrefix') ? project.compilerPrefix : 'arm-frc-linux-gnueabi-'
 model {
     platforms {
 	arm {
@@ -14,9 +13,9 @@ model {
             target("arm") {
                 // We use a custom-built cross compiler with the prefix arm-frc-linux-gnueabi-<util name>
                 // If this ever changes, the prefix will need to be changed here
-                cppCompiler.executable = compilerPrefix + cppCompiler.executable
-                linker.executable = compilerPrefix + linker.executable
-                assembler.executable = compilerPrefix + assembler.executable
+                cppCompiler.executable = compilerPrefixToUse + cppCompiler.executable
+                linker.executable = compilerPrefixToUse + linker.executable
+                assembler.executable = compilerPrefixToUse + assembler.executable
                 // Gradle auto-adds the -m32 argument to the linker and compiler. Our compiler only supports
                 // arm, and doesn't understand this flag, so it is removed from both
                 cppCompiler.withArguments { args ->
@@ -32,7 +31,7 @@ model {
                     args << '-rdynamic' << '-pthread'
                     args.remove('-m32')
                 }
-                staticLibArchiver.executable = compilerPrefix + staticLibArchiver.executable
+                staticLibArchiver.executable = compilerPrefixToUse + staticLibArchiver.executable
             }
         }
         // Workaround for OS X. Macs for some reason want to use Xcode's gcc
@@ -42,9 +41,9 @@ model {
             target('arm') {
                 // We use a custom-built cross compiler with the prefix arm-frc-linux-gnueabi-<util name>
                 // If this ever changes, the prefix will need to be changed here
-                cppCompiler.executable = compilerPrefix + 'g++'
-                linker.executable = compilerPrefix + 'g++'
-                assembler.executable = compilerPrefix + 'gcc'
+                cppCompiler.executable = compilerPrefixToUse + 'g++'
+                linker.executable = compilerPrefixToUse + 'g++'
+                assembler.executable = compilerPrefixToUse + 'gcc'
                 // Gradle auto-adds the -m32 argument to the linker and compiler. Our compiler only supports
                 // arm, and doesn't understand this flag, so it is removed from both
                 cppCompiler.withArguments { args ->
@@ -60,7 +59,7 @@ model {
                     args << '-rdynamic' << '-pthread'
                     args.remove('-m32')
                 }
-                staticLibArchiver.executable = compilerPrefix + 'ar'
+                staticLibArchiver.executable = compilerPrefixToUse + 'ar'
             }
         }
     }
@@ -84,15 +83,15 @@ ext.debugStripSetup = {
                 task.doLast {
                     exec { 
                       ignoreExitValue = true 
-                      commandLine "${compilerPrefix}objcopy", '--only-keep-debug', library, debugLibrary 
+                      commandLine "${compilerPrefixToUse}objcopy", '--only-keep-debug', library, debugLibrary 
                     }
                     exec { 
                       ignoreExitValue = true 
-                      commandLine "${compilerPrefix}strip", '-g', library 
+                      commandLine "${compilerPrefixToUse}strip", '-g', library 
                     }
                     exec { 
                       ignoreExitValue = true 
-                      commandLine "${compilerPrefix}objcopy", "--add-gnu-debuglink=$debugLibrary", library 
+                      commandLine "${compilerPrefixToUse}objcopy", "--add-gnu-debuglink=$debugLibrary", library 
                     }
                 }
             }
