@@ -1,5 +1,17 @@
 // Set to true to embed included java libraries in the output jar
-def embedJavaLibraries = false 
+ext.embedJavaLibraries = false 
 
 // Set to true to combine the driver and cpp static libraries for wpilibc use
-def combineStaticLibs = false
+ext.combineStaticLibs = false
+
+// Set to true to include the java sources in the user zip
+ext.includeJavaSources = false
+
+// Set to true to include the java javadocs in the user zip
+ext.includeJavaJavadoc = false
+
+// Set to true to include the cpp sources in the user zip (does not include the driver sources)
+ext.includeCppSources = false
+
+// Set to true to include the driver sources in the user zip
+ext.includeDriverSources = false

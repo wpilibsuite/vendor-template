@@ -98,10 +98,10 @@ files_to_copy = {
 for key,value in files_to_copy.items():
     replaceImplDriver(key, value)
 
-os.makedirs(join(join('libraries', driver_name), 'include'))
-os.makedirs(join(join('libraries', driver_name), 'lib'))
-os.makedirs(join(join('libraries', project_name), 'include'))
-os.makedirs(join(join('libraries', project_name), 'lib'))
+os.makedirs(join(join('libraries', 'cpp'), 'include'))
+os.makedirs(join(join('libraries', 'cpp'), 'lib'))
+os.makedirs(join(join('libraries', 'driver'), 'include'))
+os.makedirs(join(join('libraries', 'driver'), 'lib'))
 os.makedirs(join('libraries', 'java'))
 
 if use_jni:
