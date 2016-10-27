@@ -10,6 +10,7 @@ project_name = project_name.replace('.', '')
 project_name = project_name.replace('_', '')
 package_name = input("Please enter a java package name: ")
 use_jni = input("Enter 1 to use JNI and a driver library, otherwise enter 0: ")
+use_jni = use_jni == '1'
 
 driver_name = project_name + "Driver"
 package_with_underscores = package_name.replace(".", "_")
@@ -34,6 +35,12 @@ def replaceImplDriver(file, output):
     s = s.replace("$packageunderscores$", package_with_underscores)
     s = s.replace("$implreplacelower$", project_name_lower)
     s = s.replace("$driverreplacelower$", driver_name_lower)
+    if use_jni:
+        s = s.replace("$usedriverreplace$", "ext.useDriver = true")
+        s = s.replace("$includeriverreplace$", "include 'arm:driver'")
+    else:
+        s = s.replace("$usedriverreplace$", "ext.useDriver = false")
+        s = s.replace("$includeriverreplace$", "")
     with open(output, "w") as f:
         f.write(s)
 
@@ -64,8 +71,8 @@ java_withoutJNI_location = join(java_template_location, 'withoutJNI')
 c_source_without_driver  = join(template_location, 'withoutDriver')
 
 jni_files_to_copy = {
-        join(java_withJNI_location, 'java.gradle') : join('java', 'java.gradle'),
         join(java_withJNI_location, 'Sample.java') : join(java_package_dir, 'Sample.java'),
+        join(template_location, 'driver.gradle') : 'driver.gradle',
         join(java_withJNI_location, 'implJNI.java') : join(java_package_dir, project_name + 'JNI.java'),
         join(java_withJNI_location, 'implJNI.cpp') : join(join('java', 'lib'), project_name + 'JNI.cpp'),
         join(c_source_with_driver, 'SampleDriver.h') : join(join('driver', 'include'), 'SampleDriver.h'),
@@ -75,15 +82,14 @@ jni_files_to_copy = {
     }
 
 non_jni_files_to_copy = {
-        join(java_withoutJNI_location, 'java.gradle') : join('java', 'java.gradle'),
         join(java_withoutJNI_location, 'Sample.java') : join(java_package_dir, 'Sample.java'),
         join(c_source_without_driver, 'Sample.h') : join(join('cpp', 'include'), 'Sample.h'),
         join(c_source_without_driver, 'Sample.cpp') : join(join('cpp', 'src'), 'Sample.cpp'),
     }
 
 files_to_copy = {
+        join(java_template_location, 'java.gradle') : join('java', 'java.gradle'),
         join(template_location, 'cpp.gradle') : 'cpp.gradle',
-        join(template_location, 'driver.gradle') : 'driver.gradle',
         join(template_location, 'settings.gradle') : 'settings.gradle',
         join(template_location, 'build.gradle') : 'build.gradle',
         join(template_location, 'dependencies.gradle') : 'dependencies.gradle',
@@ -98,7 +104,7 @@ os.makedirs(join(join('libraries', project_name), 'include'))
 os.makedirs(join(join('libraries', project_name), 'lib'))
 os.makedirs(join('libraries', 'java'))
 
-if use_jni == '1':
+if use_jni:
     for key,value in jni_files_to_copy.items():
         replaceImplDriver(key, value)
 else:

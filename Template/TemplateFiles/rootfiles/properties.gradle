@@ -1,0 +1,5 @@
+// Set to true to embed included java libraries in the output jar
+def embedJavaLibraries = false 
+
+// Set to true to combine the driver and cpp static libraries for wpilibc use
+def combineStaticLibs = false

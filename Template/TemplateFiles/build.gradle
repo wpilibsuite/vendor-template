@@ -11,6 +11,8 @@ allprojects {
     }
 }
 
+$usedriverreplace$
+
 ext.setupDefines = { project, binaries ->
     binaries.all {
         if (project.hasProperty('debug')) {
@@ -21,10 +23,12 @@ ext.setupDefines = { project, binaries ->
     }
 }
 
+apply from: "locations.gradle"
+
 ext.addUserLinks = { linker, targetPlatform, implLib ->
     def libPattern = /.*((\\/|\\).*)+lib(?<libName>.+).(.+)$/
     def libraryArgs = []
-    def libraryPath = file('libraries/driver/lib').path
+    def libraryPath = file(driverLibraryLib).path
 
     // adds all libraries found in the driver folder
     def libraryTree = fileTree(libraryPath)
@@ -41,7 +45,7 @@ ext.addUserLinks = { linker, targetPlatform, implLib ->
     
     if (implLib) {
         // adds all libraries found in the impl folder
-        def implLibraryPath = file('libraries/cpp/lib').path
+        def implLibraryPath = file(cppLibraryLib).path
         def implLibraryTree = fileTree(implLibraryPath)
         implLibraryTree.include '*.so'
         implLibraryTree.include '*.a'
@@ -63,13 +67,18 @@ ext.addUserLinks = { linker, targetPlatform, implLib ->
     }
 }
 
+apply from: "properties.gradle"
+
 apply from: "dependencies.gradle"
 
 ext.releaseDir = file("${rootDir}/release")
-apply from: "driver.gradle"
+
+if (useDriver) {
+    apply from: "driver.gradle"
+}
 apply from: "cpp.gradle"
 
-// Empty task for build so that ntcoreSourceZip and $driverreplace$SourceZip will be
+// Empty task for build so that zips will be
 // built when running ./gradlew build
 task build
 

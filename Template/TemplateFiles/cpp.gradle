@@ -23,14 +23,16 @@ def cppSetupModel = { project ->
                 sources {
                     cpp {
                         source {
-                            srcDirs = ["${rootDir}/cpp/src"]
+                            srcDirs = [cppSrc]
                             includes = ["**/*.cpp"]
                         }
                         exportedHeaders {
-                            srcDirs = ["${rootDir}/cpp/include", "${rootDir}/libraries/driver/include", "${rootDir}/libraries/cpp/include", wpilibInclude, halInclude, wpiUtilInclude, netTablesInclude]
+                            srcDirs = [cppInclude, driverLibraryInclude, cppLibraryInclude, wpilibInclude, halInclude, wpiUtilInclude, netTablesInclude]
                             includes = ['**/*.h']
                         }
-                        lib project: ':arm:driver', library: '$driverreplace$', linkage: 'static'
+                        if (useDriver) {
+                            lib project: ':arm:driver', library: '$driverreplace$', linkage: 'static'
+                        }
                     }
                 }
             }
@@ -42,6 +44,10 @@ project(':arm:cpp') {
     apply plugin: 'cpp'
 
     apply from: "${rootDir}/toolchains/arm.gradle"
+    
+    if (!useDriver) {
+        apply from: "${rootDir}/java/java.gradle"
+    }
 
     cppSetupModel(project)
     

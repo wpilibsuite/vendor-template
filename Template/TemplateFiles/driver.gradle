@@ -21,12 +21,11 @@ def driverSetupModel = { project ->
                 sources {
                     cpp {
                         source {
-                            srcDirs = ["${rootDir}/driver/src"]
-                            srcDirs "${rootDir}/java/lib"
+                            srcDirs = [driverSrc, javaJNISrc]
                             includes = ["**/*.cpp",]
                         }
                         exportedHeaders {
-                            srcDirs = ["${rootDir}/driver/include", "${rootDir}/libraries/driver/include", halInclude, wpiUtilInclude]
+                            srcDirs = [driverInclude, driverLibraryInclude, halInclude, wpiUtilInclude]
                             project.jniHeaders.outputs.files.each { file ->
                                 srcDirs file.getPath()
                             }
