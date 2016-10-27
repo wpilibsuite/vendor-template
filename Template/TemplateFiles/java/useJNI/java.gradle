@@ -38,15 +38,11 @@ jar {
     dependsOn { classes }
 }
 
-project.tasks.whenTaskAdded { task ->
-        if (task.name == '$implreplace$SharedLibrary') jar.dependsOn task
-}
-
 /**
  * Generates the JNI headers
  */
-task jniHeaders$implreplace$ {
-    description = 'Generates JNI headers from edu.wpi.first.wpilibj.$implreplace$.*'
+task jniHeaders {
+    description = 'Generates JNI headers'
     group = 'WPILib'
     def outputFolder = file(generatedJNIHeaderLoc)
     inputs.files sourceSets.main.output
@@ -90,11 +86,11 @@ ext.setupJniIncludes = { binaries ->
             cppCompiler.args '-I', file("${rootDir}/java/arm-linux").absolutePath
             cppCompiler.args '-I', file("${rootDir}/java/arm-linux/linux").absolutePath
 
-            jniHeaders$implreplace$.outputs.files.each { file ->
+            jniHeaders.outputs.files.each { file ->
                 cppCompiler.args '-I', file.getPath()
             }
 
-            dependsOn jniHeaders$implreplace$
+            dependsOn jniHeaders
         }
     }
 }

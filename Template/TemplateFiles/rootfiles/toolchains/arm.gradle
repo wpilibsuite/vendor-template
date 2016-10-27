@@ -74,13 +74,11 @@ ext.setupDebugDefines = { cppCompiler, linker ->
     cppCompiler.args '-g', '-O0'
 }
 
-// Used only on Windows.
-ext.setupDef = { linker, deffile -> }
-
 ext.debugStripSetup = {
     if (!project.hasProperty('debug')) {
         project.tasks.whenObjectAdded { task ->
-            if (task.name.contains('link') && task.name.contains('SharedLibrary')) {
+            def name = task.name.toLowerCase()
+            if (name.contains('link') && name.contains('sharedlibrary')) {
                 def library = task.outputFile.absolutePath
                 def debugLibrary = task.outputFile.absolutePath + ".debug"
                 task.doLast {

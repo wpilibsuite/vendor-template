@@ -3,7 +3,7 @@ defineHALProperties()
 defineNetworkTablesProperties()
 defineWpiLibProperties()
 
-def $implreplace$SetupModel = { project ->
+def cppSetupModel = { project ->
     project.model {
         components {
             $implreplace$(NativeLibrarySpec) {
@@ -23,14 +23,14 @@ def $implreplace$SetupModel = { project ->
                 sources {
                     cpp {
                         source {
-                            srcDirs = ["${rootDir}/$implreplace$/src"]
+                            srcDirs = ["${rootDir}/cpp/src"]
                             includes = ["**/*.cpp"]
                         }
                         exportedHeaders {
-                            srcDirs = ["${rootDir}/$implreplace$/include", "${rootDir}/libraries/$driverreplace$/include", "${rootDir}/libraries/$implreplace$/include", wpilibInclude, halInclude, wpiUtilInclude, netTablesInclude]
+                            srcDirs = ["${rootDir}/cpp/include", "${rootDir}/libraries/driver/include", "${rootDir}/libraries/cpp/include", wpilibInclude, halInclude, wpiUtilInclude, netTablesInclude]
                             includes = ['**/*.h']
                         }
-                        lib project: ':arm:$driverreplace$', library: '$driverreplace$', linkage: 'static'
+                        lib project: ':arm:driver', library: '$driverreplace$', linkage: 'static'
                     }
                 }
             }
@@ -38,10 +38,12 @@ def $implreplace$SetupModel = { project ->
     }
 }
 
-project(':arm:$implreplace$') {
+project(':arm:cpp') {
     apply plugin: 'cpp'
 
     apply from: "${rootDir}/toolchains/arm.gradle"
 
-    $implreplace$SetupModel(project)
+    cppSetupModel(project)
+    
+    project.debugStripSetup()
 }

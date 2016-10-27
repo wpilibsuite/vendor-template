@@ -1,7 +1,7 @@
 defineWpiUtilProperties()
 defineHALProperties()
 
-def $driverreplace$SetupModel = { project ->
+def driverSetupModel = { project ->
     project.model {
         components {
             $driverreplace$(NativeLibrarySpec) {
@@ -16,25 +16,19 @@ def $driverreplace$SetupModel = { project ->
                     }
                 }
 
-                if (includeJava) {
-                    project.setupJniIncludes(binaries)
-                }
+                project.setupJniIncludes(binaries)
 
                 sources {
                     cpp {
                         source {
-                            srcDirs = ["${rootDir}/$driverreplace$/src"]
-                            if (includeJava) {
-                                srcDirs "${rootDir}/java/lib"
-                            }
+                            srcDirs = ["${rootDir}/driver/src"]
+                            srcDirs "${rootDir}/java/lib"
                             includes = ["**/*.cpp",]
                         }
                         exportedHeaders {
-                            srcDirs = ["${rootDir}/$driverreplace$/include", "${rootDir}/libraries/$driverreplace$/include", halInclude, wpiUtilInclude]
-                            if (includeJava) {
-                                project.jniHeaders$implreplace$.outputs.files.each { file ->
-                                    srcDirs file.getPath()
-                                }
+                            srcDirs = ["${rootDir}/driver/include", "${rootDir}/libraries/driver/include", halInclude, wpiUtilInclude]
+                            project.jniHeaders.outputs.files.each { file ->
+                                srcDirs file.getPath()
                             }
                             includes = ['**/*.h']
                         }
@@ -45,14 +39,14 @@ def $driverreplace$SetupModel = { project ->
     }
 }
 
-project(':arm:$driverreplace$') {
+project(':arm:driver') {
     apply plugin: 'cpp'
 
     apply from: "${rootDir}/toolchains/arm.gradle"
 
-    if (includeJava) {
-        apply from: "${rootDir}/java/java.gradle"
-    }
+    apply from: "${rootDir}/java/java.gradle"
 
-    $driverreplace$SetupModel(project)
+    driverSetupModel(project)
+    
+    project.debugStripSetup()
 }

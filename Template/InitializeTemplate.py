@@ -68,22 +68,22 @@ jni_files_to_copy = {
         join(java_withJNI_location, 'Sample.java') : join(java_package_dir, 'Sample.java'),
         join(java_withJNI_location, 'implJNI.java') : join(java_package_dir, project_name + 'JNI.java'),
         join(java_withJNI_location, 'implJNI.cpp') : join(join('java', 'lib'), project_name + 'JNI.cpp'),
-        join(c_source_with_driver, 'SampleDriver.h') : join(join(driver_name, 'include'), 'SampleDriver.h'),
-        join(c_source_with_driver, 'SampleDriver.cpp') : join(join(driver_name, 'src'), 'SampleDriver.cpp'),
-        join(c_source_with_driver, 'Sample.h') : join(join(project_name, 'include'), 'Sample.h'),
-        join(c_source_with_driver, 'Sample.cpp') : join(join(project_name, 'src'), 'Sample.cpp'),
+        join(c_source_with_driver, 'SampleDriver.h') : join(join('driver', 'include'), 'SampleDriver.h'),
+        join(c_source_with_driver, 'SampleDriver.cpp') : join(join('driver', 'src'), 'SampleDriver.cpp'),
+        join(c_source_with_driver, 'Sample.h') : join(join('cpp', 'include'), 'Sample.h'),
+        join(c_source_with_driver, 'Sample.cpp') : join(join('cpp', 'src'), 'Sample.cpp'),
     }
 
 non_jni_files_to_copy = {
         join(java_withoutJNI_location, 'java.gradle') : join('java', 'java.gradle'),
         join(java_withoutJNI_location, 'Sample.java') : join(java_package_dir, 'Sample.java'),
-        join(c_source_without_driver, 'Sample.h') : join(join(project_name, 'include'), 'Sample.h'),
-        join(c_source_without_driver, 'Sample.cpp') : join(join(project_name, 'src'), 'Sample.cpp'),
+        join(c_source_without_driver, 'Sample.h') : join(join('cpp', 'include'), 'Sample.h'),
+        join(c_source_without_driver, 'Sample.cpp') : join(join('cpp', 'src'), 'Sample.cpp'),
     }
 
 files_to_copy = {
-        join(template_location, 'impl.gradle') : project_name + '.gradle',
-        join(template_location, 'driver.gradle') : driver_name + '.gradle',
+        join(template_location, 'cpp.gradle') : 'cpp.gradle',
+        join(template_location, 'driver.gradle') : 'driver.gradle',
         join(template_location, 'settings.gradle') : 'settings.gradle',
         join(template_location, 'build.gradle') : 'build.gradle',
         join(template_location, 'dependencies.gradle') : 'dependencies.gradle',

@@ -38,14 +38,10 @@ jar {
     dependsOn { classes }
 }
 
-project.tasks.whenTaskAdded { task ->
-        if (task.name == '$implreplace$SharedLibrary') jar.dependsOn task
-}
-
 /**
  * Generates the JNI headers
  */
-task jniHeaders$implreplace$ {
+task jniHeaders {
     description = 'Generates JNI headers from edu.wpi.first.wpilibj.$implreplace$.*'
     group = 'WPILib'
     def outputFolder = file(generatedJNIHeaderLoc)

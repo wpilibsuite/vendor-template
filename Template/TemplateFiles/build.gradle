@@ -11,24 +11,6 @@ allprojects {
     }
 }
 
-// Determine what repo to publish to. Default is development. Valid options are development, beta, stable, and release
-if (!hasProperty('repo')) {
-    allprojects {
-        ext.repo = 'development'
-    }
-}
-
-ext.includeJava = !project.hasProperty('skipJava')
-
-
-ext.getPlatformPath = { binary ->
-    if (binary.targetPlatform.architecture.arm) {
-        return 'Linux/arm'
-    } else {
-        return binary.targetPlatform.operatingSystem.name + '/' + binary.targetPlatform.architecture.name
-    }
-}
-
 ext.setupDefines = { project, binaries ->
     binaries.all {
         if (project.hasProperty('debug')) {
@@ -42,7 +24,7 @@ ext.setupDefines = { project, binaries ->
 ext.addUserLinks = { linker, targetPlatform, implLib ->
     def libPattern = /.*((\\/|\\).*)+lib(?<libName>.+).(.+)$/
     def libraryArgs = []
-    def libraryPath = file('libraries/$driverreplace$/lib').path
+    def libraryPath = file('libraries/driver/lib').path
 
     // adds all libraries found in the driver folder
     def libraryTree = fileTree(libraryPath)
@@ -59,7 +41,7 @@ ext.addUserLinks = { linker, targetPlatform, implLib ->
     
     if (implLib) {
         // adds all libraries found in the impl folder
-        def implLibraryPath = file('libraries/$implreplace$/lib').path
+        def implLibraryPath = file('libraries/cpp/lib').path
         def implLibraryTree = fileTree(implLibraryPath)
         implLibraryTree.include '*.so'
         implLibraryTree.include '*.a'
@@ -84,8 +66,8 @@ ext.addUserLinks = { linker, targetPlatform, implLib ->
 apply from: "dependencies.gradle"
 
 ext.releaseDir = file("${rootDir}/release")
-apply from: "$driverreplace$.gradle"
-apply from: "$implreplace$.gradle"
+apply from: "driver.gradle"
+apply from: "cpp.gradle"
 
 // Empty task for build so that ntcoreSourceZip and $driverreplace$SourceZip will be
 // built when running ./gradlew build
