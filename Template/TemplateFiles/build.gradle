@@ -13,8 +13,6 @@ allprojects {
 
 $usedriverreplace$
 
-ext.libraryName = "$implreplace$"
-
 ext.setupDefines = { project, binaries ->
     binaries.all {
         if (project.hasProperty('debug')) {
@@ -72,8 +70,6 @@ ext.addUserLinks = { linker, targetPlatform, implLib ->
 apply from: "properties.gradle"
 
 apply from: "dependencies.gradle"
-
-ext.releaseDir = file("${rootDir}/release")
 
 if (useDriver) {
     apply from: "driver.gradle"

@@ -31,8 +31,8 @@ dependencies {
 }
 
 jar {
-    description = 'Generates $implreplace$ jar'
-    baseName = '$implreplace$'
+    description = 'Generates jar'
+    baseName = libraryName
     duplicatesStrategy = 'exclude'
 
     dependsOn { classes }
@@ -54,8 +54,7 @@ task jniHeaders {
             executable org.gradle.internal.jvm.Jvm.current().getExecutable('javah')
             args '-d', outputFolder
             args '-classpath', sourceSets.main.runtimeClasspath.asPath
-            // If you need more JNI files, add them here
-            args '$javapackage$.$implreplace$JNI'
+            args jniDefinitions
         }
     }
 }

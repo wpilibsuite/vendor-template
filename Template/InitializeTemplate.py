@@ -90,6 +90,8 @@ non_jni_files_to_copy = {
 files_to_copy = {
         join(java_template_location, 'java.gradle') : join('java', 'java.gradle'),
         join(template_location, 'cpp.gradle') : 'cpp.gradle',
+        join(template_location, 'locations.gradle') : 'locations.gradle',
+        join(template_location, 'properties.gradle') : 'properties.gradle',
         join(template_location, 'settings.gradle') : 'settings.gradle',
         join(template_location, 'build.gradle') : 'build.gradle',
         join(template_location, 'dependencies.gradle') : 'dependencies.gradle',

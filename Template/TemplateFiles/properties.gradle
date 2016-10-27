@@ -1,3 +1,7 @@
+// Name of the library used for changing zip outputs and jar name
+// Note will not change native library names
+ext.libraryName = "$implreplace$"
+
 // Set to true to embed included java libraries in the output jar
 ext.embedJavaLibraries = false 
 

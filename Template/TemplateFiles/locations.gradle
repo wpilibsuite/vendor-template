@@ -20,3 +20,9 @@ ext.javaSrc = "${rootDir}/java/src"
 
 // Locations for libraries to include in the Java library
 ext.javaLibraryLoc = "${rootDir}/libraries/java"
+
+// Locations for the JNI java files to generate headers from
+ext.jniDefinitions = ['$javapackage$.$implreplace$JNI']
+
+// Folder to put release zips into
+ext.releaseDir = file("${rootDir}/release")
