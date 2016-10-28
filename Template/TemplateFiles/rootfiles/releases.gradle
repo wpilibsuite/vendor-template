@@ -330,7 +330,7 @@ task cppSources(type: Zip) {
     group = 'WPILib'
     destinationDir = releaseDir
     baseName = libraryName
-    classifier = 'driversources'
+    classifier = 'cppsources'
     duplicatesStrategy = 'exclude'
     
     from(cppSrc) {
