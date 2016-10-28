@@ -42,7 +42,7 @@ task userSharedZip(type: Zip) {
   
   // Copy include files from cpp project
   from(file(cppInclude)) {
-      include '*.h'
+      include '**/*.h'
       into '/cpp/include'
   }
 
@@ -65,13 +65,13 @@ task userSharedZip(type: Zip) {
 
   // copy driver include
   from (file(driverInclude)) {
-      include '*.h'
+      include '**/*.h'
       into '/cpp/include'
   }
   
   // Copy included driver library headers
   from(file(driverLibraryInclude)) {
-      include '*.h'
+      include '**/*.h'
       into '/cpp/include'
   }
   
@@ -84,7 +84,7 @@ task userSharedZip(type: Zip) {
   
   // Copy included driver library headers
   from(file(cppLibraryInclude)) {
-      include '*.h'
+      include '**/*.h'
       into '/cpp/include'
   }
   
@@ -163,7 +163,7 @@ task userSharedZip(type: Zip) {
   // Include cpp sources if set
   if (includeCppSources) {
       from(file(cppSrc)) {
-          include '*.cpp'
+          include '**/*.cpp'
           into '/cpp/src'
       }
   }
@@ -171,7 +171,7 @@ task userSharedZip(type: Zip) {
   // Include driver sources if set
   if (includeDriverSources) {
       from(file(driverSrc)) {
-          include '*.cpp'
+          include '**/*.cpp'
           into '/cpp/src'
       }
   }
@@ -187,7 +187,7 @@ task userStaticZip(type: Zip) {
   
   // Copy include files from cpp project
   from(file(cppInclude)) {
-      include '*.h'
+      include '**/*.h'
       into '/cpp/include'
   }
 
@@ -205,13 +205,13 @@ task userStaticZip(type: Zip) {
 
   // copy driver include
   from (file(driverInclude)) {
-      include '*.h'
+      include '**/*.h'
       into '/cpp/include'
   }
   
   // Copy included driver library headers
   from(file(driverLibraryInclude)) {
-      include '*.h'
+      include '**/*.h'
       into '/cpp/include'
   }
   
@@ -224,7 +224,7 @@ task userStaticZip(type: Zip) {
   
   // Copy included driver library headers
   from(file(cppLibraryInclude)) {
-      include '*.h'
+      include '**/*.h'
       into '/cpp/include'
   }
   
@@ -311,7 +311,7 @@ task userStaticZip(type: Zip) {
   // Include cpp sources if set
   if (includeCppSources) {
       from(file(cppSrc)) {
-          include '*.cpp'
+          include '**/*.cpp'
           into '/cpp/src'
       }
   }
@@ -319,7 +319,7 @@ task userStaticZip(type: Zip) {
   // Include driver sources if set
   if (includeDriverSources) {
       from(file(driverSrc)) {
-          include '*.cpp'
+          include '**/*.cpp'
           into '/cpp/src'
       }
   }
