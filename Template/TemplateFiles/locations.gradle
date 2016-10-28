@@ -21,7 +21,7 @@ ext.javaJNISrc = "${rootDir}/java/lib"
 ext.javaSrc = "${rootDir}/java/src"
 
 // Locations for libraries to include in the Java library
-ext.javaLibraryLoc = "${rootDir}/libraries/java"
+ext.javaLibraryLoc = "${rootDir}/libraries/java/lib"
 
 // Locations for the JNI java files to generate headers from
 ext.jniDefinitions = ['$javapackage$.$implreplace$JNI']
