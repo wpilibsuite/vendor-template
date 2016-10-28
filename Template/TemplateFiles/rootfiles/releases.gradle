@@ -98,6 +98,7 @@ task userSharedZip(type: Zip) {
     // Include java jar
     if (useDriver) {
         def javaProject = project(':arm:driver')
+        dependsOn javaProject.jar
         // Copy project java binary
         from (file(javaProject.jar.archivePath)) {
            //from '*.jar'
@@ -105,6 +106,7 @@ task userSharedZip(type: Zip) {
         } 
     } else {
         def javaProject = project(':arm:cpp')
+        dependsOn javaProject.jar
         // Copy project java binary
         from (file(javaProject.jar.archivePath)) {
            //from '*.jar'
@@ -237,6 +239,7 @@ task userStaticZip(type: Zip) {
     // Include java jar
     if (useDriver) {
         def javaProject = project(':arm:driver')
+        dependsOn javaProject.jar
         // Copy project java binary
         from (file(javaProject.jar.archivePath)) {
            //from '*.jar'
@@ -244,6 +247,7 @@ task userStaticZip(type: Zip) {
         } 
     } else {
         def javaProject = project(':arm:cpp')
+        dependsOn javaProject.jar
         // Copy project java binary
         from (file(javaProject.jar.archivePath)) {
            //from '*.jar'
