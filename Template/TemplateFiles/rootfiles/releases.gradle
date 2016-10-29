@@ -101,7 +101,6 @@ task userSharedZip(type: Zip) {
         dependsOn javaProject.jar
         // Copy project java binary
         from (file(javaProject.jar.archivePath)) {
-           //from '*.jar'
             into '/java/lib'
         } 
     } else {
@@ -109,7 +108,6 @@ task userSharedZip(type: Zip) {
         dependsOn javaProject.jar
         // Copy project java binary
         from (file(javaProject.jar.archivePath)) {
-           //from '*.jar'
             into '/java/lib'
         }
     } 
@@ -242,7 +240,6 @@ task userStaticZip(type: Zip) {
         dependsOn javaProject.jar
         // Copy project java binary
         from (file(javaProject.jar.archivePath)) {
-           //from '*.jar'
             into '/java/lib'
         } 
     } else {
@@ -250,7 +247,6 @@ task userStaticZip(type: Zip) {
         dependsOn javaProject.jar
         // Copy project java binary
         from (file(javaProject.jar.archivePath)) {
-           //from '*.jar'
             into '/java/lib'
         }
     }
