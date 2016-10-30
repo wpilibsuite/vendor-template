@@ -62,7 +62,6 @@ ext.mergeStaticSetup = { pjt ->
                     }
                     
                     ByteArrayOutputStream mriFile = new ByteArrayOutputStream()
-                    //def mriFile = new File("${libraryPath}/lib${libraryName}.mri")
                     mriFile << "create lib${libraryName}.a\n"
                     mriFile << "addlib lib${libraryName}.a.m\n"
                     mriFile << "addlib lib${libraryName}Driver.a\n"
