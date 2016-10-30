@@ -94,4 +94,3 @@ By default, you should not need to modify any settings in any of the gradle file
   - When JNI headers are generated, only specific classes specified have headers generated for them. If you would like to add additional Java classes to create headers from, inside of `locations.gradle` there is a property called `jniDefinitions`. Add any additional classes you would like to generate headers for to this array.
 
 If you run into something different you would like to change, contact us and we will attempt to help figure out how to properly perform that change.
-
