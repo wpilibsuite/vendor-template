@@ -36,15 +36,23 @@ If you did not select to use the JNI, the build system will provide 2 libraries.
 ## Our recommendations
 If your library can be used completely using WPILib level classes and functionality, the no JNI build option should be the right one. However, if you do need native level code, in order for everything to link properly and be functional, you will most likely have to use the driver/JNI library with a thin wrapper on top written in either WPILib language.
 
-## Packing for distribution
-During the build process, a release folder will be created in the root of the repository. Inside of this folder will be 6 zips. 
+## User Selectable Options
+In order to facilitate more custom uses, a large amount of user selectable options have been provided. These options can be found either in the `locations.gradle` or `properties.gradle` in the root of the directory. Below is a list of options in each file, and what they do.
 
-- ProjectName-driver.zip will contain the driver library and all libraries needed to run it. Note if you selected no JNI/Driver library, this zip will be emply except for 2 prebuilt libraries. Will also contain all necessary dependancies and headers
-- ProjectName-java.zip will contain the java jar, along with the javadocs for java. In addition, if JNI was selected, this zip will contain the native JNI/driver library as well.
-- ProjectName-cpp.zip will contain the C++ library for use with wpilibc. Will also contain all necessary dependancies and headers
-- ProjectName-driversources.zip will contain the sources and headers for the driver/jni library. This will not show up if you did not use the JNI/Driver option.
-- ProjectName-javasources.zip will contain the Java sources
-- ProjectName-cppsources.zip will contain the sources and headers for the wpilibc library. This will not contain the sources for the driver library.
+`locations.gradle` includes options for selecting locations for source code and release directories. By default, these will point to directories inside of the project, however they can be changed to point anywhere on disk, for instance if you already have your source code in another directory.
+
+`properties.gradle` includes other user configurable options by the library. By default, the properties that select if libraries are merged together are set to true, however properties that would include sources are set to false. This allows you to decide whether to include sources or not in the release files. 
 
 ## Linking to other libraries
-During creation, a folder called libraries is created in the root of the repo. Inside this folder are folders for the implementation library and the driver library. Headers and C libraries can be placed in these folders, and they will be automatically added to the projects. The driver library will only be able to access the driver libraries, and the implementation will be able to access both sets of native libraries. These libraries are placed in the release zips in order to be usable.
+During creation, a folder called libraries is created in the root of the repo. Inside this folder are folders for the cpp library and the driver library. Headers and C libraries can be placed in these folders, and they will be automatically added to the projects. In addition, raw source code can be placed in the `src` folder in order to be build with the library. The driver library will only be able to access the driver libraries, and the implementation will be able to access both sets of native libraries. These libraries are placed in the release zips in order to be usable. In addition, a Java folder will be created as well. There is a `lib` folder and a `src` folder in here as well. The lib folder will be used in the classpath, and will be embedded in the output jar if the `embedJavaLibraries` option is set to true in `properties.gradle`. The `src` folder will always be built and included in the output jar. 
+
+Note that all of these paths can be individually changed in the `locations.gradle` file in order to work with your build system.
+
+## Packing for distribution
+During the build process, a release folder will be created in the root of the repository. Inside of this folder will be multiple files, but there are only two that are really important. `ProjectName-usershared.zip` and `ProjectName-userstatic.zip`. These are almost identical in all respects except the static version will include static libraries for linking with wpilibc, and the shared version will include shared libraries for linking with wpilibc. 
+
+The zips will include a folder structure already set up for integrating directly into eclipse. By default, the `/java/lib` folder will include the library jar. If the option for `embedJavaLibraries` was not selected, any external jars that were linked to will also be placed in this folder. Otherwise, the contents of those libraries will be included in the jar. In addition, if the JNI option was selected, or the library link folder included any shared libraries, those will be copied into the lib folder as well. If the `includeJavaSources` or `includeJavaJavadoc` properties were enabled, the jars for those will also be included in the lib directory.
+
+For C++, the `/cpp/include` folder will include all headers included in both the driver project and the cpp project, along with any headers from other libraries that were included. The `/cpp/lib` folder will include either the shared or static libraries built by this project, in addition to any libraries included externally. And finally, if you enabled either `includeCppSources` or `includeDriverSources`, the source files will be placed in `/cpp/src/ProjectName`. Note that any source files included from external libraries will never be included, so if you want proprietary C++ source files, the external library directories are our recommended location to place those source files.
+
+For choosing between static and shared, that option is entirely up to you. The eclipse plugins will gracefully handle both methods of distribution, so that is entirely up to your user preference.
