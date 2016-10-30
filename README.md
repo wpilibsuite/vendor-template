@@ -16,7 +16,7 @@ Gradle is the main build system used by this template. All tasks are run with th
 ./gradlew build
 ```
 
-The template will automatically grab the newest version of WPILib and all of it's dependancies to ensure the buiild is compatable with the lastest images and plugins
+The template will automatically grab the newest version of WPILib and all of it's dependencies to ensure the buiild is compatable with the lastest images and plugins
 
 ## Setting up the repository
 In order to properly set up the repository, a file called InitializeTemplate.py is provided. Running this will ask for 3 questions. The first is a project name (ex. CANJaguar, ADXRS535). The second is a java package to place the code into. The 3rd is asking if you require JNI. If there is functionality you need that is not provided by WPILib but can be accessed using either the HAL or native code, that is when to use JNI.
@@ -35,6 +35,15 @@ If you did not select to use the JNI, the build system will provide 2 libraries.
 
 ## Our recommendations
 If your library can be used completely using WPILib level classes and functionality, the no JNI build option should be the right one. However, if you do need native level code, in order for everything to link properly and be functional, you will most likely have to use the driver/JNI library with a thin wrapper on top written in either WPILib language.
+
+## Generating JNI headers
+
+In order to write proper JNI cpp files, you will probably need the JNI headers generated in order to know the function declarations. In order to do this, run the following command.
+```bash
+./gradlew jniHeaders
+```
+
+This will generate the JNI headers, and place them into `/arm/driver/build/include`. You can then use those headers in order to create your JNI cpp files.
 
 ## User Selectable Options
 In order to facilitate more custom uses, a large amount of user selectable options have been provided. These options can be found either in the `locations.gradle` or `properties.gradle` in the root of the directory. Below is a list of options in each file, and what they do.
@@ -56,3 +65,33 @@ The zips will include a folder structure already set up for integrating directly
 For C++, the `/cpp/include` folder will include all headers included in both the driver project and the cpp project, along with any headers from other libraries that were included. The `/cpp/lib` folder will include either the shared or static libraries built by this project, in addition to any libraries included externally. And finally, if you enabled either `includeCppSources` or `includeDriverSources`, the source files will be placed in `/cpp/src/ProjectName`. Note that any source files included from external libraries will never be included, so if you want proprietary C++ source files, the external library directories are our recommended location to place those source files.
 
 For choosing between static and shared, that option is entirely up to you. The eclipse plugins will gracefully handle both methods of distribution, so that is entirely up to your user preference.
+
+## Linking to release WPILib
+
+By default, the library will use the latest development branch of WPILib. This branch is updated every time a new commit is pushed to master. For most development purposes, this is the recommended branch to be using. However, if you want to build a release that links to the latest wpilib release build, you can do so with the following commands.
+
+```bash
+./gradlew clean
+./gradlew build -PreleaseType=OFFICIAL
+```
+
+The clean is required in order to remove all development dependencies, and then the build with the releaseType property selects the the release repository. To switch back to the development repository, run a clean, and then run build by itself like before.
+
+## Editing the build settings
+
+By default, you should not need to modify any settings in any of the gradle files other then `locations.gradle` and `properties.gradle`. However, if you do realize you need any addition changes, most of the common ones are listed below.
+
+- Include more then one source or header directory to a cpp project.
+  - Inside either `cpp.gradle` or `driver.gradle`, depending on which project you want to modify, you will see a property called `srcDirs` inside of the `source` property. Into that array is where you would add any addtional cpp source locations. For headers, modify the `srcDirs` property inside of the `exportedHeaders` property to include the new location you want to use. 
+  - Note if you want to add a seperate location for prebuilt libraries, this is more difficult, so I would recommend contacting WPILib for help with this.
+- Include more then one library or source directory for Java
+  - Inside of `java/java.gradle`, inside of the sourceSets properties there is a `srcDirs` property. Add any addition source locations to this array. For libraries, in the dependencies property you will see something like these 2 lines below. Copy both of these lines to have a second copy right below the existing one, and change `javaLibraryLoc` to be a string to your desired location.
+  ```
+  compile fileTree(dir: javaLibraryLoc, include: ['*.jar'])
+  runtime fileTree(dir: javaLibraryLoc, include: ['*.jar'])
+  ```
+- Adding new JNI libraries.
+  - When JNI headers are generated, only specific classes specified have headers generated for them. If you would like to add additional Java classes to create headers from, inside of `locations.gradle` there is a property called `jniDefinitions`. Add any additional classes you would like to generate headers for to this array.
+
+If you run into something different you would like to change, contact us and we will attempt to help figure out how to properly perform that change.
+
