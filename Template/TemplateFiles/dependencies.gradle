@@ -63,7 +63,7 @@ task downloadHAL() {
     
 
     doFirst {
-        def armHALDependency = project.dependencies.create("edu.wpi.first.wpilib:hal:2017.+@zip")
+        def armHALDependency = project.dependencies.create("edu.wpi.first.wpilib:hal:+@zip")
         def armHALConfig = project.configurations.detachedConfiguration(armHALDependency)
         armHALConfig.setTransitive(false)
         armHal = armHALConfig.files[0].canonicalFile
@@ -177,7 +177,7 @@ task downloadWpilib() {
     
 
     doFirst {
-        def armWpiUtilDependency = project.dependencies.create("edu.wpi.first.wpilibc:athena:2017.+@zip")
+        def armWpiUtilDependency = project.dependencies.create("edu.wpi.first.wpilibc:athena:+@zip")
         def armWpiUtilConfig = project.configurations.detachedConfiguration(armWpiUtilDependency)
         armWpiUtilConfig.setTransitive(false)
         armWPILib = armWpiUtilConfig.files[0].canonicalFile
