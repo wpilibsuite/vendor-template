@@ -79,7 +79,7 @@ The clean is required in order to remove all development dependencies, and then 
 
 ## Editing the build settings
 
-By default, you should not need to modify any settings in any of the gradle files other then `locations.gradle` and `properties.gradle`. However, if you do realize you need any addition changes, most of the common ones are listed below.
+By default, you should not need to modify any settings in any of the gradle files other than `locations.gradle` and `properties.gradle`. However, if you do realize you need any addition changes, most of the common ones are listed below.
 
 - Include more then one source or header directory to a cpp project.
   - Inside either `cpp.gradle` or `driver.gradle`, depending on which project you want to modify, you will see a property called `srcDirs` inside of the `source` property. Into that array is where you would add any addtional cpp source locations. For headers, modify the `srcDirs` property inside of the `exportedHeaders` property to include the new location you want to use. 
