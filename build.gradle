@@ -1,3 +1,6 @@
+import org.apache.tools.ant.filters.*;
+import org.apache.tools.ant.DirectoryScanner
+
 task wrapper(type: Wrapper) {
     gradleVersion = '3.0'
 }
@@ -15,13 +18,36 @@ task templateZip(type: Zip) {
   baseName = 'vendor-template'
   duplicatesStrategy = 'exclude'
   
+  doFirst {
+      DirectoryScanner.defaultExcludes.each { DirectoryScanner.removeDefaultExclude it }
+      DirectoryScanner.addDefaultExclude 'something has to be in here or everything gets excluded'
+   }
+   
   from(file('Template')) {
+      include '**/gradlew.bat'
+      filter(FixCrLfFilter.class,
+         eol:FixCrLfFilter.CrLf.newInstance("crlf"))
+      into '/'
+  }
+  
+  
+  from(file('Template')) {
+    exclude '**/gradlew.bat'
+    filter(FixCrLfFilter.class,
+         eol:FixCrLfFilter.CrLf.newInstance("lf"))
+    
     into '/'
   }
   
   from(file('README.md')) {
+  filter(FixCrLfFilter.class,
+         eol:FixCrLfFilter.CrLf.newInstance("lf"))
     into '/'
   }
+  
+  doLast {
+      DirectoryScanner.resetDefaultExcludes()
+   }
 }
 
 task build
