@@ -83,7 +83,7 @@ By default, you should not need to modify any settings in any of the gradle file
 
 - Include more then one source or header directory to a cpp project.
   - Inside either `cpp.gradle` or `driver.gradle`, depending on which project you want to modify, you will see a property called `srcDirs` inside of the `source` property. Into that array is where you would add any addtional cpp source locations. For headers, modify the `srcDirs` property inside of the `exportedHeaders` property to include the new location you want to use. 
-  - Note if you want to add a seperate location for prebuilt libraries, this is more difficult, so I would recommend contacting WPILib for help with this.
+  - Note if you want to add a seperate location for prebuilt libraries, this is more difficult, so we would recommend contacting WPILib for help with this.
 - Include more then one library or source directory for Java
   - Inside of `java/java.gradle`, inside of the sourceSets properties there is a `srcDirs` property. Add any addition source locations to this array. For libraries, in the dependencies property you will see something like these 2 lines below. Copy both of these lines to have a second copy right below the existing one, and change `javaLibraryLoc` to be a string to your desired location.
   ```
