@@ -3,6 +3,11 @@ import shutil
 
 from os.path import join
 
+vendor_name = input("Please input a vendor name: ")
+vendor_name = vendor_name.replace('-', '')
+vendor_name = vendor_name.replace(' ', '')
+vendor_name = vendor_name.replace('.', '')
+vendor_name = vendor_name.replace('_', '')
 project_name = input("Please enter a name for your project: ")
 project_name = project_name.replace('-', '')
 project_name = project_name.replace(' ', '')
@@ -19,6 +24,7 @@ template_location = 'TemplateFiles'
 
 driver_name_lower = driver_name.lower()
 project_name_lower = project_name.lower()
+vendor_name_upper = vendor_name.upper()
 
 def replaceImplDriver(file, output):
     dir = os.path.dirname(output)
@@ -30,8 +36,10 @@ def replaceImplDriver(file, output):
     with open(output) as f:
         s = f.read()
     s = s.replace("$implreplace$", project_name)
+    s = s.replace("$vendorreplace$", vendor_name)
     s = s.replace("$driverreplace$", driver_name)
     s = s.replace("$javapackage$", package_name)
+    s = s.replace("$vendorallcaps$", vendor_name_upper)
     s = s.replace("$packageunderscores$", package_with_underscores)
     s = s.replace("$implreplacelower$", project_name_lower)
     s = s.replace("$driverreplacelower$", driver_name_lower)
@@ -71,20 +79,23 @@ java_withoutJNI_location = join(java_template_location, 'withoutJNI')
 c_source_without_driver  = join(template_location, 'withoutDriver')
 
 jni_files_to_copy = {
-        join(java_withJNI_location, 'Sample.java') : join(java_package_dir, 'Sample.java'),
         join(template_location, 'driver.gradle') : 'driver.gradle',
-        join(java_withJNI_location, 'implJNI.java') : join(java_package_dir, project_name + 'JNI.java'),
-        join(java_withJNI_location, 'implJNI.cpp') : join(join('java', 'lib'), project_name + 'JNI.cpp'),
-        join(c_source_with_driver, 'SampleDriver.h') : join(join('driver', 'include'), 'SampleDriver.h'),
-        join(c_source_with_driver, 'SampleDriver.cpp') : join(join('driver', 'src'), 'SampleDriver.cpp'),
-        join(c_source_with_driver, 'Sample.h') : join(join('cpp', 'include'), 'Sample.h'),
-        join(c_source_with_driver, 'Sample.cpp') : join(join('cpp', 'src'), 'Sample.cpp'),
+        join(java_withJNI_location, 'vendorJNIWrapper.java') : join(java_package_dir, vendor_name + 'JNIWrapper.java'),
+        join(java_withJNI_location, 'vendorJNIUtilities.cpp') : join(join('java', 'lib'), vendor_name + 'JNIUtilities.cpp'),
+        join(java_withJNI_location, 'vendorJNIUtilities.h') : join(join('java', 'lib'), vendor_name + 'JNIUtilities.h'),
+        join(java_withJNI_location, 'ReversibleDigitalInputJNI.cpp') : join(join('java', 'lib'), 'ReversibleDigitalInputJNI.cpp'),
+        join(java_withJNI_location, 'ReversibleDigitalInput.java') : join(java_package_dir, 'ReversibleDigitalInput.java'),
+        join(java_withJNI_location, 'ReversibleDigitalInputJNI.java') : join(java_package_dir, 'ReversibleDigitalInputJNI.java'),
+        join(c_source_with_driver, 'ReversibleDigitalInputDriver.h') : join(join('driver', 'include'), 'ReversibleDigitalInputDriver.h'),
+        join(c_source_with_driver, 'ReversibleDigitalInputDriver.cpp') : join(join('driver', 'src'), 'ReversibleDigitalInputDriver.cpp'),
+        join(c_source_with_driver, 'ReversibleDigitalInput.h') : join(join('cpp', 'include'), 'ReversibleDigitalInput.h'),
+        join(c_source_with_driver, 'ReversibleDigitalInput.cpp') : join(join('cpp', 'src'), 'ReversibleDigitalInput.cpp'),
     }
 
 non_jni_files_to_copy = {
-        join(java_withoutJNI_location, 'Sample.java') : join(java_package_dir, 'Sample.java'),
-        join(c_source_without_driver, 'Sample.h') : join(join('cpp', 'include'), 'Sample.h'),
-        join(c_source_without_driver, 'Sample.cpp') : join(join('cpp', 'src'), 'Sample.cpp'),
+        join(java_withoutJNI_location, 'ReversibleDigitalInput.java') : join(java_package_dir, 'ReversibleDigitalInput.java'),
+        join(c_source_without_driver, 'ReversibleDigitalInput.h') : join(join('cpp', 'include'), 'ReversibleDigitalInput.h'),
+        join(c_source_without_driver, 'ReversibleDigitalInput.cpp') : join(join('cpp', 'src'), 'ReversibleDigitalInput.cpp'),
     }
 
 files_to_copy = {

@@ -12,9 +12,7 @@
 #include "support/jni_util.h"
 #include "HAL/HAL.h"
 
-#include "$packageunderscores$_$implreplace$JNI.h"
-
-#include "SampleDriver.h"
+#include "$vendorreplace$JNIUtilities.h"
 
 
 using namespace wpi::java;
@@ -145,8 +143,9 @@ static void GetStackTrace(JNIEnv *env, std::string &res, std::string &func) {
   // release java resources
   env->DeleteLocalRef(stackTrace);
 }
-  
-static void ReportError(JNIEnv *env, int32_t status, bool do_throw) {
+
+namespace $vendorreplace$ {
+void ReportError(JNIEnv *env, int32_t status, bool do_throw) {
   if (status == 0) return;
   const char *message = HAL_GetErrorMessage(status);
   if (do_throw && status < 0) {
@@ -161,24 +160,4 @@ static void ReportError(JNIEnv *env, int32_t status, bool do_throw) {
     HAL_SendError(1, status, 0, message, func.c_str(), stack.c_str(), 1);
   }
 }
-  
-
-inline bool CheckStatus(JNIEnv *env, int32_t status, bool do_throw = true) {
-  if (status != 0) ReportError(env, status, do_throw);
-  return status == 0;
 }
-
-extern "C" {
-
-/*
- * Class:     $packageunderscores$_$implreplace$JNI
- * Method:    writeStringToConsole
- * Signature: (Ljava/lang/String)I
- */
-JNIEXPORT jint JNICALL Java_$packageunderscores$_$implreplace$JNI_writeStringToConsole
-  (JNIEnv *env, jclass, jstring toWrite)
-{
-  return SAMPLE_WriteStringToConsole(JStringRef{env, toWrite}.c_str());
-}
-  
-}  // extern "C"

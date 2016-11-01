@@ -1,7 +1,7 @@
 package $javapackage$;
 
 @SuppressWarnings("MethodName")
-public class $implreplace$JNI {
+public class $vendorreplace$JNIWrapper {
   static boolean libraryLoaded = false;
   
   static {
@@ -15,6 +15,4 @@ public class $implreplace$JNI {
       libraryLoaded = true;
     }
   }
-  
-  public static native int writeStringToConsole(String toWrite);
 }
