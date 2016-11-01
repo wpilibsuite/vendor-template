@@ -33,9 +33,15 @@ task templateZip(type: Zip) {
   
   from(file('Template')) {
     exclude '**/gradlew.bat'
+    exclude '**/gradle-wrapper.jar'
     filter(FixCrLfFilter.class,
          eol:FixCrLfFilter.CrLf.newInstance("lf"))
     
+    into '/'
+  }
+  
+  from(file('Template')) {
+    include '**/gradle-wrapper.jar'    
     into '/'
   }
   
