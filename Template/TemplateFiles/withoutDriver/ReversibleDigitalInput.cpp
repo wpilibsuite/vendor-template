@@ -1,6 +1,8 @@
 #include "ReversibleDigitalInput.h"
 
 namespace $vendorreplace$ {
+  
+using namespace frc;
 
 ReversibleDigitalInput::ReversibleDigitalInput(int channel) : m_reverse(true) {
   m_digitalInput = std::make_unique<DigitalInput>(channel);

@@ -6,7 +6,7 @@
 
 namespace $vendorreplace$ {
 
-class ReversibleDigitalInput : SensorBase {
+class ReversibleDigitalInput : frc::SensorBase {
  public:
   ReversibleDigitalInput(int channel);
   
@@ -14,6 +14,6 @@ class ReversibleDigitalInput : SensorBase {
   bool Get();
  private:
   bool m_reverse;
-  std::unique_ptr<DigitalInput> m_digitalInput;
+  std::unique_ptr<frc::DigitalInput> m_digitalInput;
 };
 }

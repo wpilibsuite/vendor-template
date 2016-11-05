@@ -10,6 +10,7 @@ def driverSetupModel = { project ->
 
                 binaries.all {
                     tasks.withType(CppCompile) {
+                        cppCompiler.args "-DNAMESPACED_WPILIB"
                         addUserLinks(linker, targetPlatform, false)
                         addWpiUtilLibraryLinks(it, linker, targetPlatform)
                         addHalLibraryLinks(it, linker, targetPlatform)

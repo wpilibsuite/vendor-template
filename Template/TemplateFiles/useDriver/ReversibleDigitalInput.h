@@ -5,7 +5,7 @@
 
 namespace $vendorreplace$ {
 
-class ReversibleDigitalInput : SensorBase {
+class ReversibleDigitalInput : frc::SensorBase {
  public:
   ReversibleDigitalInput(int channel);
   ~ReversibleDigitalInput();
