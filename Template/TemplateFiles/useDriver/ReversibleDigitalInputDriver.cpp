@@ -50,7 +50,7 @@ void $vendorallcaps$_SetReverseReversibleDigitalInput($vendorallcaps$_Handle han
   }
   input->SetReverseInput(reverse, status);
 }
-HAL_Bool $vendorallcaps$($vendorallcaps$_Handle handle, int32_t* status) {
+HAL_Bool $vendorallcaps$_GetReversibleDigitalInputValue($vendorallcaps$_Handle handle, int32_t* status) {
   auto input = reversibleDigitalInputHandles.Get(handle);
   if (input == nullptr) {
     *status = HAL_HANDLE_ERROR;
