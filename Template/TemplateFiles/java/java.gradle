@@ -14,14 +14,21 @@ configurations.errorprone {
 def generatedJNIHeaderLoc = "${buildDir}/include"
 
 sourceSets {
+    user {
+        java {
+            srcDirs = [userJavaSrc]
+        }
+    }
     main {
         java {
-            srcDirs = [javaSrc, userJavaSrc]
+            srcDirs = [javaSrc]
         }
     }
 }
     
 dependencies {
+    compile sourceSets.user.output
+    runtime sourceSets.user.output
     compile 'edu.wpi.first.wpilibj:athena:+'
     runtime 'edu.wpi.first.wpilibj:athena:+'
     compile 'edu.wpi.first.wpilib.networktables.java:NetworkTables:+:arm'
@@ -37,14 +44,15 @@ jar {
 
     dependsOn { classes }
 
-    doFirst {
-    // Add all dependancies that are not wpilib based if we are including the classpath
     if (embedJavaLibraries) {
-        configurations.compile.findAll { 
-            if (!it.toString().contains('edu.wpi.first.wpilib')) {
-                from it.isDirectory() ? it : zipTree(it) } 
-            }
+        def tree = fileTree(dir: javaLibraryLoc, include: ['*.jar'])
+        tree.each {
+            from zipTree(it.path)
         }
+    }
+
+    if (embedJavaLibraries) {
+        from sourceSets.user.output
     }
 }
 
