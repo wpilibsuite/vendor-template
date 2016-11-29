@@ -177,10 +177,10 @@ task downloadWpilib() {
     
 
     doFirst {
-        def armWpiUtilDependency = project.dependencies.create("edu.wpi.first.wpilibc:athena:+@zip")
-        def armWpiUtilConfig = project.configurations.detachedConfiguration(armWpiUtilDependency)
-        armWpiUtilConfig.setTransitive(false)
-        armWPILib = armWpiUtilConfig.files[0].canonicalFile
+        def armWpiLibDependency = project.dependencies.create("edu.wpi.first.wpilibc:athena:+@zip")
+        def armWpiLibConfig = project.configurations.detachedConfiguration(armWpiLibDependency)
+        armWpiLibConfig.setTransitive(false)
+        armWPILib = armWpiLibConfig.files[0].canonicalFile
     }
 
     doLast {
