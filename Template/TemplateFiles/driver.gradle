@@ -18,6 +18,7 @@ def driverSetupModel = { project ->
                 }
 
                 project.setupJniIncludes(binaries)
+                project.checkNativeSymbols(project.getNativeJNISymbols)
 
                 sources {
                     cpp {
