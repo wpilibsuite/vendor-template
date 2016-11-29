@@ -8,7 +8,7 @@ extern "C" {
  * Method:    InitializeReversibleDigitalInput
  * Signature: (I)I
  */
-JNIEXPORT jint JNICALL Java_com_wpilib_ReversibleDigitalInputJNI_InitializeReversibleDigitalInput
+JNIEXPORT jint JNICALL Java_$packageunderscores$_ReversibleDigitalInputJNI_InitializeReversibleDigitalInput
   (JNIEnv * env, jclass, jint channel) {
   int32_t status = 0;
   auto handle = $vendorallcaps$_InitializeReversibleDigitalInput(channel, &status);
@@ -17,21 +17,21 @@ JNIEXPORT jint JNICALL Java_com_wpilib_ReversibleDigitalInputJNI_InitializeRever
 }
 
 /*
- * Class:     com_wpilib_ReversibleDigitalInputJNI
+ * Class:     $packageunderscores$_ReversibleDigitalInputJNI
  * Method:    FreeReversibleDigitalInput
  * Signature: (I)V
  */
-JNIEXPORT void JNICALL Java_com_wpilib_ReversibleDigitalInputJNI_FreeReversibleDigitalInput
+JNIEXPORT void JNICALL Java_$packageunderscores$_ReversibleDigitalInputJNI_FreeReversibleDigitalInput
   (JNIEnv * env, jclass, jint handle) {
   $vendorallcaps$_FreeReversibleDigitalInput(handle);
 }
 
 /*
- * Class:     com_wpilib_ReversibleDigitalInputJNI
+ * Class:     $packageunderscores$_ReversibleDigitalInputJNI
  * Method:    SetReversal
  * Signature: (IZ)V
  */
-JNIEXPORT void JNICALL Java_com_wpilib_ReversibleDigitalInputJNI_SetReversal
+JNIEXPORT void JNICALL Java_$packageunderscores$_ReversibleDigitalInputJNI_SetReversal
   (JNIEnv * env, jclass, jint handle, jboolean reverse) {
   int32_t status = 0;
   $vendorallcaps$_SetReverseReversibleDigitalInput(handle, reverse, &status);
@@ -39,11 +39,11 @@ JNIEXPORT void JNICALL Java_com_wpilib_ReversibleDigitalInputJNI_SetReversal
 }
 
 /*
- * Class:     com_wpilib_ReversibleDigitalInputJNI
+ * Class:     $packageunderscores$_ReversibleDigitalInputJNI
  * Method:    GetReversibleDigitalInput
  * Signature: (I)Z
  */
-JNIEXPORT jboolean JNICALL Java_com_wpilib_ReversibleDigitalInputJNI_GetReversibleDigitalInput
+JNIEXPORT jboolean JNICALL Java_$packageunderscores$_ReversibleDigitalInputJNI_GetReversibleDigitalInput
   (JNIEnv * env, jclass, jint handle) 
   {
   int32_t status = 0;
