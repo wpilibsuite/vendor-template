@@ -2,6 +2,7 @@ defineWpiUtilProperties()
 defineHALProperties()
 defineNetworkTablesProperties()
 defineWpiLibProperties()
+defineCsCoreProperties()
 
 def cppSetupModel = { project ->
     project.model {
@@ -18,6 +19,7 @@ def cppSetupModel = { project ->
                         addWpiUtilLibraryLinks(it, linker, targetPlatform)
                         addNetworkTablesLibraryLinks(it, linker, targetPlatform)
                         addWpilibLibraryLinks(it, linker, targetPlatform)
+						addCsCoreLibraryLinks(it, linker, targetPlatform)
                     }
                 }
 
@@ -28,7 +30,7 @@ def cppSetupModel = { project ->
                             includes = ["**/*.cpp"]
                         }
                         exportedHeaders {
-                            srcDirs = [cppInclude, driverLibraryInclude, cppLibraryInclude, wpilibInclude, halInclude, wpiUtilInclude, netTablesInclude]
+                            srcDirs = [cppInclude, driverLibraryInclude, cppLibraryInclude, wpilibInclude, halInclude, wpiUtilInclude, netTablesInclude, cscoreInclude]
                             includes = ['**/*.h']
                         }
                         if (useDriver) {

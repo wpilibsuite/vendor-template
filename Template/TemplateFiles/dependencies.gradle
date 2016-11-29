@@ -222,3 +222,62 @@ ext.defineWpiLibProperties = {
     }
 }
 
+def cscoreUnzipLocation = "$buildDir/cscore"
+
+task downloadCsCore() {
+    description = 'Downloads the C++ ARM CsCore maven dependency.'
+
+    group = 'WPILib'
+    def depFolder = "$buildDir/dependencies"
+    def libZip = file("$depFolder/cscore.zip")
+    outputs.file(libZip)
+    def armCsCore
+    
+
+    doFirst {
+        def armCsDependency = project.dependencies.create("edu.wpi.cscore.cpp:cscore:+:athena-uberzip@zip")
+        def armCsConfig = project.configurations.detachedConfiguration(armCsDependency)
+        armCsConfig.setTransitive(false)
+        armCsCore = armCsConfig.files[0].canonicalFile
+    }
+
+    doLast {
+        copy {
+            from armCsCore
+            rename 'cscore(.+)', 'cscore.zip'
+            into depFolder
+        }
+    }
+}
+
+// Create a task that will unzip the cscore files into a temporary build directory
+task unzipCsCore(type: Copy) {
+    description = 'Unzips the cscore maven dependency so that the include files and libraries can be used'
+    group = 'WPILib'
+    dependsOn downloadCsCore
+    
+    from zipTree(downloadCsCore.outputs.files.singleFile)
+    into cscoreUnzipLocation
+}
+
+ext.defineCsCoreProperties = {
+    ext.cscore = cscoreUnzipLocation
+    ext.cscoreInclude = "$cscoreUnzipLocation/include"
+    ext.cscoreLocation = "$cscoreUnzipLocation/lib"
+    ext.opencvSharedLib = "$cscoreLocation/libopencv.so"
+	ext.cscoreSharedLib = "$cscoreLocation/libcscore.so"
+    
+    ext.addCsCoreLibraryLinks = { compileTask, linker, targetPlatform ->
+        compileTask.dependsOn project(':').unzipCsCore
+        String architecture = targetPlatform.architecture
+        if (architecture.contains('arm')) {
+            // Grab all the shared libraries and link them
+            linker.args opencvSharedLib
+			linker.args cscoreSharedLib
+
+            def libraryPath = cscoreLocation
+
+            linker.args << '-L' + libraryPath
+        }
+    }
+}
