@@ -6,3 +6,6 @@ release/*
 #!Template/InitializeTemplate.py
 #!Template/TemplateFiles/*
 #!Template/TemplateFiles/dependencies.gradle
+*.project
+.settings/org.eclipse.buildship.core.prefs
+.vscode/

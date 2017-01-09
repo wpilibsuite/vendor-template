@@ -1,10 +1,6 @@
 import org.apache.tools.ant.filters.*;
 import org.apache.tools.ant.DirectoryScanner
 
-task wrapper(type: Wrapper) {
-    gradleVersion = '3.0'
-}
-
 def releaseDir = file("${rootDir}/release")
 
 task clean(type: Delete) {
@@ -59,3 +55,7 @@ task templateZip(type: Zip) {
 task build
 
 build.dependsOn templateZip
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '3.3'
+}
