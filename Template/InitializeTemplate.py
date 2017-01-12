@@ -67,8 +67,8 @@ def copytree(src, dst, symlinks=False, ignore=None):
 copytree(join(template_location, "rootfiles"), os.getcwd())
 
 java_template_location = join(template_location, 'java')
-
-shutil.copytree(join(java_template_location, 'arm-linux'), join('java', 'arm-linux'))
+if use_jni:
+    shutil.copytree(join(java_template_location, 'arm-linux'), join('java', 'arm-linux'))
 
 java_withJNI_location = join(java_template_location, 'useJNI')
 
