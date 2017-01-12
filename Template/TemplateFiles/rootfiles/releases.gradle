@@ -359,11 +359,157 @@ if (useDriver) {
     }
 }
 
+task copyToEclipse(type: Copy) {
+    description = 'Creates user zip of libraries, with shared c++ libs.'
+    group = 'WPILib'
+    def userDir = System.getProperty("user.home")
+    destinationDir = file("${userDir}/wpilib/user/")
+    
+    // Copy include files from cpp project
+    from(file(cppInclude)) {
+        include '**/*.h'
+        into '/cpp/include'
+    }
+
+    // Copy static binaries from cpp project
+    project(':arm:cpp').model {
+        binaries {
+            withType(StaticLibraryBinarySpec) { binary ->
+                from(binary.staticLibraryFile) {
+                    include '*.a'
+                    into '/cpp/lib'
+                }
+            }
+        }
+    }
+
+    // copy driver include
+    from (file(driverInclude)) {
+        include '**/*.h'
+        into '/cpp/include'
+    }
+    
+    // Copy included driver library headers
+    from(file(driverLibraryInclude)) {
+        include '**/*.h'
+        into '/wpilib/user/cpp/include'
+    }
+    
+    // Copy included driver library binaries
+    from(file(driverLibraryLib)) {
+        include '*.so*'
+        include '*.a*'
+        into '/cpp/lib'
+    }
+    
+    // Copy included driver library headers
+    from(file(cppLibraryInclude)) {
+        include '**/*.h'
+        into '/cpp/include'
+    }
+    
+    // Copy included driver library binaries
+    from(file(cppLibraryLib)) {
+        include '*.so*'
+        include '*.a*'
+        into '/cpp/lib'
+    }
+
+    // Include java jar
+    if (useDriver) {
+        def javaProject = project(':arm:driver')
+        dependsOn javaProject.jar
+        // Copy project java binary
+        from (file(javaProject.jar.archivePath)) {
+            into '/java/lib'
+        } 
+    } else {
+        def javaProject = project(':arm:cpp')
+        dependsOn javaProject.jar
+        // Copy project java binary
+        from (file(javaProject.jar.archivePath)) {
+            into '/java/lib'
+        }
+    }
+    
+    // Copy shared binaries from driver project for java
+    if (useDriver) {
+        project(':arm:driver').model {
+            binaries {
+                if (!combineStaticLibs) {
+                    withType(StaticLibraryBinarySpec) { binary ->
+                        from(binary.staticLibraryFile) {
+                            include '*.a'
+                            into '/cpp/lib'
+                        }
+                    }
+                }
+                withType(SharedLibraryBinarySpec) { binary ->
+                    from(binary.sharedLibraryFile) {
+                        include '*.so'
+                        into '/java/lib'
+                    }
+                    def debugFile = new File(binary.sharedLibraryFile.absolutePath + ".debug")
+                      from(debugFile) {
+                          include '*.so.debug'
+                          into '/java/lib'
+                      }
+                }
+            }
+        }
+    }
+    
+    // If not embedded java, include java libs
+    if (!embedJavaLibraries) {
+        from(file(javaLibraryLoc)) {
+            include '*.jar'
+            include '*.so'
+            include '*.so.debug'
+            into '/java/lib'
+        }
+    }
+
+    // Include java sources if set
+    if (includeJavaSources) {
+      dependsOn javaSourceJar
+        from (file(javaSourceJar.archivePath)) {
+            into '/java/src'
+        }
+    }
+    
+    // Include java javadoc if set
+    if (includeJavaJavadoc) {
+        dependsOn javaJavadocJar
+        from (file(javaJavadocJar.archivePath)) {
+            into '/java/src'
+        }
+    }
+    
+    // Include cpp sources if set
+    if (includeCppSources) {
+        from(file(cppSrc)) {
+            include '**/*.cpp'
+            include '**/*.h'
+            into "/cpp/src/$libraryName"
+        }
+    }
+    
+    // Include driver sources if set
+    if (includeDriverSources) {
+        from(file(driverSrc)) {
+            include '**/*.cpp'
+            include '**/*.h'
+            into "/cpp/src/$libraryName"
+        }
+    }
+}
+
 project(':arm:cpp').tasks.whenTaskAdded { task ->
     def name = task.name.toLowerCase()
     if (name.contains("sharedlibrary") || name.contains("staticlibrary")) {
         userSharedZip.dependsOn task
         userStaticZip.dependsOn task
+        copyToEclipse.dependsOn task
     }
 }
 
@@ -373,9 +519,12 @@ if (useDriver) {
         if (name.contains("sharedlibrary") || name.contains("staticlibrary")) {
             userSharedZip.dependsOn task
             userStaticZip.dependsOn task
+            copyToEclipse.dependsOn task
         }
     }
 }
+
+
 
 build.dependsOn javaSourceJar
 build.dependsOn javaJavadocJar
@@ -384,4 +533,8 @@ build.dependsOn userStaticZip
 build.dependsOn cppSources
 if (useDriver) {
     build.dependsOn driverSources
+}
+
+if (setCopyToEclipse) {
+    build.dependsOn copyToEclipse
 }

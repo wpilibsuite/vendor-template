@@ -19,3 +19,6 @@ ext.includeCppSources = false
 
 // Set to true to include the driver sources in the user zip
 ext.includeDriverSources = false
+
+// Set to true to automatically copy to eclipse on build
+ext.setCopyToEclipse = false
