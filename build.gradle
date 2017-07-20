@@ -13,40 +13,39 @@ task templateZip(type: Zip) {
   destinationDir = releaseDir
   baseName = 'vendor-template'
   duplicatesStrategy = 'exclude'
-  
+
   doFirst {
       DirectoryScanner.defaultExcludes.each { DirectoryScanner.removeDefaultExclude it }
       DirectoryScanner.addDefaultExclude 'something has to be in here or everything gets excluded'
    }
-   
+
   from(file('Template')) {
       include '**/gradlew.bat'
       filter(FixCrLfFilter.class,
          eol:FixCrLfFilter.CrLf.newInstance("crlf"))
       into '/'
   }
-  
-  
+
   from(file('Template')) {
     exclude '**/gradlew.bat'
     exclude '**/gradle-wrapper.jar'
     filter(FixCrLfFilter.class,
          eol:FixCrLfFilter.CrLf.newInstance("lf"))
-    
+
     into '/'
   }
-  
+
   from(file('Template')) {
-    include '**/gradle-wrapper.jar'    
+    include '**/gradle-wrapper.jar'
     into '/'
   }
-  
+
   from(file('README.md')) {
   filter(FixCrLfFilter.class,
          eol:FixCrLfFilter.CrLf.newInstance("lf"))
     into '/'
   }
-  
+
   doLast {
       DirectoryScanner.resetDefaultExcludes()
    }
@@ -57,5 +56,5 @@ task build
 build.dependsOn templateZip
 
 task wrapper(type: Wrapper) {
-    gradleVersion = '3.3'
+    gradleVersion = '4.1'
 }
