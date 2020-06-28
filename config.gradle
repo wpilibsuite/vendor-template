@@ -95,9 +95,9 @@ ext.createComponentZipTasks = { components, names, base, type, project, func ->
     configMap.each { key, value ->
         def task = project.tasks.create(base + "-${key}", type) {
             description = 'Creates component archive for platform ' + key
-            destinationDir = outputsFolder
+            destinationDirectory = outputsFolder
             classifier = key
-            baseName = '_M_' + base
+            archiveBaseName = '_M_' + base
             duplicatesStrategy = 'exclude'
 
             from(licenseFile) {
@@ -123,9 +123,9 @@ ext.createAllCombined = { list, name, base, type, project ->
 
     def task = project.tasks.create(base + "-all", type) {
         description = "Creates component archive for all classifiers"
-        destinationDir = outputsFolder
+        destinationDirectory = outputsFolder
         classifier = "all"
-        baseName = base
+        archiveBaseName = base
         duplicatesStrategy = 'exclude'
 
         list.each {
