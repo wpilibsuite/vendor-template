@@ -47,8 +47,8 @@ def zipBaseName = "_GROUP_com_vendor_frc_ID_${baseArtifactId}-cpp_CLS"
 def javaBaseName = "_GROUP_com_vendor_frc_ID_${baseArtifactId}-java_CLS"
 
 task cppHeadersZip(type: Zip) {
-    destinationDir = outputsFolder
-    baseName = zipBaseName
+    destinationDirectory = outputsFolder
+    archiveBaseName = zipBaseName
     classifier = "headers"
 
     from(licenseFile) {
@@ -61,8 +61,8 @@ task cppHeadersZip(type: Zip) {
 }
 
 task cppSourceZip(type: Zip) {
-    destinationDir = outputsFolder
-    baseName = zipBaseName
+    destinationDirectory = outputsFolder
+    archiveBaseName = zipBaseName
     classifier = "source"
 
     from(licenseFile) {
@@ -75,8 +75,8 @@ task cppSourceZip(type: Zip) {
 }
 
 task cppDriverHeadersZip(type: Zip) {
-    destinationDir = outputsFolder
-    baseName = driverZipBaseName
+    destinationDirectory = outputsFolder
+    archiveBaseName = driverZipBaseName
     classifier = "headers"
 
     from(licenseFile) {
@@ -106,21 +106,21 @@ task javadocJar(type: Jar, dependsOn: javadoc) {
 }
 
 task outputJar(type: Jar, dependsOn: classes) {
-    baseName javaBaseName
-    destinationDir outputsFolder
+    archiveBaseName = javaBaseName
+    destinationDirectory = outputsFolder
     from sourceSets.main.output
 }
 
 task outputSourcesJar(type: Jar, dependsOn: classes) {
-    baseName javaBaseName
-    destinationDir outputsFolder
+    archiveBaseName = javaBaseName
+    destinationDirectory = outputsFolder
     classifier = 'sources'
     from sourceSets.main.allSource
 }
 
 task outputJavadocJar(type: Jar, dependsOn: javadoc) {
-    baseName javaBaseName
-    destinationDir outputsFolder
+    archiveBaseName = javaBaseName
+    destinationDirectory = outputsFolder
     classifier = 'javadoc'
     from javadoc.destinationDir
 }

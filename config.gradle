@@ -6,10 +6,11 @@ nativeUtils.withRoboRIO()
 nativeUtils {
   wpi {
     configureDependencies {
-      wpiVersion = "2019.+"
-      niLibVersion = "2019.12.2"
-      opencvVersion = "3.4.7-1"
-      googleTestVersion = "1.9.0-3-437e100"
+      wpiVersion = "2020.+"
+      niLibVersion = "2020.10.1"
+      opencvVersion = "3.4.7-3"
+      googleTestVersion = "1.9.0-4-437e100-1"
+      imguiVersion = "1.76-2"
     }
   }
 }
