@@ -3,7 +3,7 @@ package com.vendor.jni;
 import java.io.IOException;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import edu.wpi.first.wpiutil.RuntimeLoader;
+import edu.wpi.first.util.RuntimeLoader;
 
 public class VendorJNI {
   static boolean libraryLoaded = false;
