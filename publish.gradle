@@ -65,7 +65,7 @@ task cppHeadersZip(type: Zip) {
 task cppSourceZip(type: Zip) {
     destinationDirectory = outputsFolder
     archiveBaseName = zipBaseName
-    classifier = "source"
+    classifier = "sources"
 
     from(licenseFile) {
         into '/'
