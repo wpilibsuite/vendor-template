@@ -2,7 +2,7 @@
     "fileName": "ExampleVendorJson.json",
     "name": "ExampleVendorDep",
     "version": "0.0.1",
-    "uuid": "Generate A Unique UUID and insert it here", This line is to purposely make this fail to parse
+    "uuid": "Generate A Unique GUID https://guidgenerator.com/online-guid-generator.aspx and insert it here", This line is to purposely make this fail to parse
     "mavenUrls": [
         "ThisNeedsToBeTheRootMavenUrl"
     ],
