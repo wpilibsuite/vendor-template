@@ -1,0 +1,73 @@
+{
+    "fileName": "ExampleVendorJson.json",
+    "name": "ExampleVendorDep",
+    "version": "0.0.1",
+    "uuid": "Generate A Unique UUID and insert it here", This line is to purposely make this fail to parse
+    "mavenUrls": [
+        "ThisNeedsToBeTheRootMavenUrl"
+    ],
+    "jsonUrl": "InsertSomeUrlHere",
+    "javaDependencies": [
+        {
+            "groupId": "com.vendor.frc",
+            "artifactId": "Vendor-java",
+            "version": "0.0.1"
+        }
+    ],
+    "jniDependencies": [
+        {
+            "groupId": "com.vendor.frc",
+            "artifactId": "Vendor-driver",
+            "version": "0.0.1",
+            "skipInvalidPlatforms": true,
+            "isJar": false,
+            "validPlatforms": [
+                "windowsx86-64",
+                "windowsx86",
+                "linuxarm64",
+                "linuxx86-64",
+                "linuxathena",
+                "linuxarm32",
+                "osxuniversal"
+            ]
+        }
+    ],
+    "cppDependencies": [
+        {
+            "groupId": "com.vendor.frc",
+            "artifactId": "Vendor-cpp",
+            "version": "0.0.1",
+            "libName": "Vendor",
+            "headerClassifier": "headers",
+            "sharedLibrary": false,
+            "skipInvalidPlatforms": true,
+            "binaryPlatforms": [
+                "windowsx86-64",
+                "windowsx86",
+                "linuxarm64",
+                "linuxx86-64",
+                "linuxathena",
+                "linuxarm32",
+                "osxuniversal"
+            ]
+        },
+        {
+            "groupId": "com.vendor.frc",
+            "artifactId": "Vendor-driver",
+            "version": "0.0.1",
+            "libName": "VendorDriver",
+            "headerClassifier": "headers",
+            "sharedLibrary": false,
+            "skipInvalidPlatforms": true,
+            "binaryPlatforms": [
+                "windowsx86-64",
+                "windowsx86",
+                "linuxarm64",
+                "linuxx86-64",
+                "linuxathena",
+                "linuxarm32",
+                "osxuniversal"
+            ]
+        }
+    ]
+}
