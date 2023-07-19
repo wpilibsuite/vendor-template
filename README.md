@@ -1,6 +1,6 @@
 # WPILib Vendor Template
 
-This is the base WPILib vendor template for 2020. Much of the customizability has been removed for 2020, as it was rarely used, and its easier to just modify the existing one.
+This is the base WPILib vendor template for 2023.
 
 ## Layout
 
