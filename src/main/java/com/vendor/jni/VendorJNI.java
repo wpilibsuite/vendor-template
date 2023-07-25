@@ -24,7 +24,7 @@ public class VendorJNI {
   static {
     if (Helper.getExtractOnStaticLoad()) {
       try {
-        loader = new RuntimeLoader<>("Vendor", RuntimeLoader.getDefaultExtractionRoot(), VendorJNI.class);
+        loader = new RuntimeLoader<>("VendorDriver", RuntimeLoader.getDefaultExtractionRoot(), VendorJNI.class);
         loader.loadLibrary();
       } catch (IOException ex) {
         ex.printStackTrace();
@@ -42,7 +42,7 @@ public class VendorJNI {
     if (libraryLoaded) {
       return;
     }
-    loader = new RuntimeLoader<>("VendorJNI", RuntimeLoader.getDefaultExtractionRoot(), VendorJNI.class);
+    loader = new RuntimeLoader<>("VendorDriver", RuntimeLoader.getDefaultExtractionRoot(), VendorJNI.class);
     loader.loadLibrary();
     libraryLoaded = true;
   }
