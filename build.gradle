@@ -126,5 +126,5 @@ model {
 apply from: 'publish.gradle'
 
 wrapper {
-  gradleVersion '7.5.1'
+  gradleVersion '8.2.1'
 }
