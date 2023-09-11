@@ -4,14 +4,16 @@ nativeUtils.addWpiNativeUtils()
 nativeUtils.withCrossRoboRIO()
 
 nativeUtils {
-  wpi {
-    configureDependencies {
-      wpiVersion = "2023.+"
-      niLibVersion = "2023.3.0"
-      opencvVersion = "4.6.0-3"
-      googleTestVersion = "1.12.1-1"
+    wpi {
+        configureDependencies {
+            wpiVersion = "2024.+"
+            opencvYear = "frc2023"
+            googleTestYear = "frc2023"
+            niLibVersion = "2023.3.0"
+            opencvVersion = "4.6.0-5"
+            googleTestVersion = "1.12.1-2"
+        }
     }
-  }
 }
 
 nativeUtils.wpi.addWarnings()
