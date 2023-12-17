@@ -30,7 +30,7 @@ jobs:
           fetch-depth: 0
       - name: Fetch all history and metadata
         run: |
-          git config --global --add safe.directory /__w/vendor-template/vendor-template
+          git config --global --add safe.directory /__w/${{ github.event.repository.name }}/${{ github.event.repository.name }}
       - name: Build with Gradle
         run: ./gradlew build --max-workers 1 ${{ matrix.build-options }}
       - uses: actions/upload-artifact@v3
@@ -40,7 +40,7 @@ jobs:
 
   build-host:
     env: 
-      MACOSX_DEPLOYMENT_TARGET: 11
+      MACOSX_DEPLOYMENT_TARGET: 12
     strategy:
       fail-fast: false
       matrix:
@@ -54,7 +54,7 @@ jobs:
     name: "Build - ${{ matrix.artifact-name }}"
     runs-on: ${{ matrix.os }}
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           submodules: true
       - name: Fetch all history and metadata
