@@ -30,7 +30,7 @@ jobs:
           fetch-depth: 0
       - name: Fetch all history and metadata
         run: |
-          git config --global --add safe.directory /__w/vendor-template/vendor-template
+          git config --global --add safe.directory /__w/${{ github.event.repository.name }}/${{ github.event.repository.name }}
       - name: Build with Gradle
         run: ./gradlew build --max-workers 1 ${{ matrix.build-options }}
       - uses: actions/upload-artifact@v3
