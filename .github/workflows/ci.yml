@@ -61,7 +61,7 @@ jobs:
         run: git fetch --prune --unshallow
       - uses: actions/setup-java@v4
         with:
-          distribution: 'zulu'
+          distribution: 'temurin'
           java-version: 17
           architecture: ${{ matrix.architecture }}
       - name: Build with Gradle
@@ -86,7 +86,7 @@ jobs:
         run: rsync -a --delete combiner/products/build/allOutputs/*/* combiner/products/build/allOutputs/
       - uses: actions/setup-java@v4
         with:
-          distribution: 'zulu'
+          distribution: 'temurin'
           java-version: 17
       - name: Combine
         # if: |
