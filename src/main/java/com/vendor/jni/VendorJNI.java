@@ -40,7 +40,6 @@ public class VendorJNI {
 
   /**
    * Force load the library.
-   * @throws java.io.IOException thrown if the native library cannot be found
    */
   public static synchronized void forceLoad() {
     if (libraryLoaded) {
