@@ -1,16 +1,12 @@
 package com.vendor.jni;
 
-import java.io.IOException;
 import java.util.concurrent.atomic.AtomicBoolean;
-
-import edu.wpi.first.util.RuntimeLoader;
 
 /**
  * Demo class for loading the driver via JNI.
  */
 public class VendorJNI {
   static boolean libraryLoaded = false;
-  static RuntimeLoader<VendorJNI> loader = null;
 
   /**
    * Helper class for determining whether or not to load the driver on static initialization.
@@ -37,13 +33,7 @@ public class VendorJNI {
 
   static {
     if (Helper.getExtractOnStaticLoad()) {
-      try {
-        loader = new RuntimeLoader<>("VendorDriver", RuntimeLoader.getDefaultExtractionRoot(), VendorJNI.class);
-        loader.loadLibrary();
-      } catch (IOException ex) {
-        ex.printStackTrace();
-        System.exit(1);
-      }
+      System.loadLibrary("VendorDriver");
       libraryLoaded = true;
     }
   }
@@ -52,12 +42,11 @@ public class VendorJNI {
    * Force load the library.
    * @throws java.io.IOException thrown if the native library cannot be found
    */
-  public static synchronized void forceLoad() throws IOException {
+  public static synchronized void forceLoad() {
     if (libraryLoaded) {
       return;
     }
-    loader = new RuntimeLoader<>("VendorDriver", RuntimeLoader.getDefaultExtractionRoot(), VendorJNI.class);
-    loader.loadLibrary();
+    System.loadLibrary("VendorDriver");
     libraryLoaded = true;
   }
 
