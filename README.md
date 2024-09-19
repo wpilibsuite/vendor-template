@@ -11,6 +11,7 @@ A driver library is built. This should contain all low level code you want to ac
 A native C++ library is built. This has access to all of wpilib, and access to the driver library. This should implment the standard wpilib interfaces.
 
 ## Customizing
+
 For Java, the library name will be the folder name the build is started from, so rename the folder to the name of your choosing. 
 
 For the native impl, you need to change the library name in the exportsConfigs block of build.gradle, the components block of build.gradle, and the taskList input array name in publish.gradle.
@@ -20,6 +21,14 @@ For the driver, change the library name in privateExportsConfigs, the driver nam
 For the maven artifact names, those are all in publish.gradle about 40 lines down.
 
 ## Building and editing
+
 This uses gradle, and uses the same base setup as a standard GradleRIO robot project. This means you build with `./gradlew build`, and can install the native toolchain with `./gradlew installRoboRIOToolchain`. If you open this project in VS Code with the wpilib extension installed, you will get intellisense set up for both C++ and Java.
 
 By default, this template builds against the latest WPILib development build. To build against the last WPILib tagged release, build with `./gradlew build -PreleaseMode`.
+
+### How to fix broken CI for post-season development builds
+
+There's two ways to fix builds after WPILib releases an alpha version for the next year and deletes the previous year's development artifacts.
+
+1. The short-term fix to keep building with the previous year is modifying build.gradle to use `wpilibRepositories.addAllReleaseRepositories(project)` or adding `-PreleaseMode` to CI build invocations
+2. The long-term fix is bumping all the version numbers in build.gradle and config.gradle to the next year (including native-utils) and consulting a WPILib developer for any breaking build template changes (e.g., some dependencies moving in or out of the monorepo, requiring changes to config.gradle's nativeUtils.wpi.configureDependencies block)
