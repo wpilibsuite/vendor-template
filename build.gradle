@@ -17,6 +17,11 @@ if (project.hasProperty('releaseMode')) {
   wpilibRepositories.addAllDevelopmentRepositories(project)
 }
 
+java {
+  sourceCompatibility = JavaVersion.VERSION_17
+  targetCompatibility = JavaVersion.VERSION_17
+}
+
 // Apply C++ configuration
 apply from: 'config.gradle'
 
