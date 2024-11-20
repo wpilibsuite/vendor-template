@@ -3,7 +3,7 @@ plugins {
   id 'java'
   id 'google-test'
   id 'edu.wpi.first.wpilib.repositories.WPILibRepositoriesPlugin' version '2020.2'
-  id 'edu.wpi.first.NativeUtils' version '2025.3.0'
+  id 'edu.wpi.first.NativeUtils' version '2025.6.0'
   id 'edu.wpi.first.GradleJni' version '1.1.0'
   id 'edu.wpi.first.GradleVsCode' version '2.1.0'
 }
@@ -126,5 +126,5 @@ model {
 apply from: 'publish.gradle'
 
 wrapper {
-  gradleVersion '8.10.2'
+  gradleVersion '8.11'
 }
