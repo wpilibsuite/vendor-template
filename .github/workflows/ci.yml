@@ -21,7 +21,7 @@ jobs:
             artifact-name: Linux
             build-options: ""
     name: "Build - ${{ matrix.artifact-name }}"
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     container: ${{ matrix.container }}
     steps:
       - uses: actions/checkout@v4
@@ -40,7 +40,7 @@ jobs:
 
   build-host:
     env: 
-      MACOSX_DEPLOYMENT_TARGET: 13
+      MACOSX_DEPLOYMENT_TARGET: 13.3
     strategy:
       fail-fast: false
       matrix:
@@ -50,7 +50,7 @@ jobs:
             architecture: x64
           - os: macos-14
             artifact-name: macOS
-            architecture: x64
+            architecture: aarch64
     name: "Build - ${{ matrix.artifact-name }}"
     runs-on: ${{ matrix.os }}
     steps:
@@ -74,7 +74,7 @@ jobs:
   combine:
     name: Combine
     needs: [build-docker, build-host]
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v4
         with:
