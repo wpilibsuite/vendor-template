@@ -65,6 +65,11 @@ if (project.hasProperty('onlylinuxathena') || project.hasProperty('onlylinuxarm3
     test.enabled = false
 }
 
+tasks.withType(JavaCompile) {
+    options.compilerArgs.add '-XDstringConcat=inline'
+    options.encoding = 'UTF-8'
+}
+
 // Setup Javadocs to link back to WPILib docs
 javadoc {
     options {
