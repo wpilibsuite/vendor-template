@@ -49,6 +49,7 @@ dependencies {
 
     testImplementation 'org.junit.jupiter:junit-jupiter:5.10.1'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    testRuntimeOnly 'us.hebi.quickbuf:quickbuf-runtime:1.3.3'
 }
 
 // Set up java tests
