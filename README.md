@@ -23,3 +23,9 @@ For the maven artifact names, those are all in publish.gradle about 40 lines dow
 This uses gradle, and uses the same base setup as a standard GradleRIO robot project. This means you build with `./gradlew build`, and can install the native toolchain with `./gradlew installRoboRIOToolchain`. If you open this project in VS Code with the wpilib extension installed, you will get intellisense set up for both C++ and Java.
 
 By default, this template builds against the latest WPILib development build. To build against the last WPILib tagged release, build with `./gradlew build -PreleaseMode`.
+
+## Checking Vendordep
+After you've published your library to maven, you can use the [vendordep checker](https://github.com/wpilibsuite/vendor-json-repo/blob/main/check.py) to check for common errors, such as not publishing all dependencies, and ensuring that all architectures are correct.
+
+## Listing Vendordep in VS Code Dependency Manager
+Follow the directions at [WPILib Vendor JSON Repository](https://github.com/wpilibsuite/vendor-json-repo/blob/main/README.md) to get a Vendordep included in the [VS Code Dependency Manager](https://docs.wpilib.org/en/stable/docs/software/vscode-overview/3rd-party-libraries.html#installing-libraries)
