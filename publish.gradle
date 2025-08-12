@@ -33,7 +33,7 @@ task libraryBuild() {}
 build.dependsOn outputVersions
 
 task copyAllOutputs(type: Copy) {
-    destinationDir file("$buildDir/allOutputs")
+    destinationDir = file("$buildDir/allOutputs")
     from versionFile
     dependsOn outputVersions
 }
@@ -183,7 +183,6 @@ def releasesRepoUrl = "$buildDir/repos/releases"
 publishing {
     repositories {
         maven {
-
             url = releasesRepoUrl
         }
     }
@@ -210,8 +209,8 @@ model {
                 artifact cppSourceZip
 
                 artifactId = "${baseArtifactId}-cpp"
-                groupId artifactGroupId
-                version pubVersion
+                groupId = artifactGroupId
+                version = pubVersion
             }
             driver(MavenPublication) {
                 driverTaskList.each {
@@ -220,8 +219,8 @@ model {
                 artifact cppDriverHeadersZip
 
                 artifactId = "${baseArtifactId}-driver"
-                groupId artifactGroupId
-                version pubVersion
+                groupId = artifactGroupId
+                version = pubVersion
             }
 
             java(MavenPublication) {
@@ -230,16 +229,16 @@ model {
                 artifact javadocJar
 
                 artifactId = "${baseArtifactId}-java"
-                groupId artifactGroupId
-                version pubVersion
+                groupId = artifactGroupId
+                version = pubVersion
             }
 
             vendordep(MavenPublication) {
                 artifact vendordepJsonZip
 
                 artifactId = "${baseArtifactId}-vendordep"
-                groupId artifactGroupId
-                version pubVersion
+                groupId = artifactGroupId
+                version = pubVersion
             }
         }
     }
