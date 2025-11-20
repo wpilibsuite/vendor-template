@@ -11,7 +11,7 @@ plugins {
 }
 
 // WPILib Version
-ext.wpilibVersion = "2025.+"
+ext.wpilibVersion = "2026.+"
 
 repositories {
   mavenCentral()
