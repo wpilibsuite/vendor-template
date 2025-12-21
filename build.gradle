@@ -1,13 +1,13 @@
-import edu.wpi.first.toolchain.*
+import org.wpilib.toolchain.*
 
 plugins {
   id 'cpp'
   id 'java'
   id 'google-test'
-  id 'edu.wpi.first.wpilib.repositories.WPILibRepositoriesPlugin' version '2025.0'
-  id 'edu.wpi.first.NativeUtils' version '2025.12.1'
-  id 'edu.wpi.first.GradleJni' version '1.1.0'
-  id 'edu.wpi.first.GradleVsCode' version '2.1.0'
+  id 'org.wpilib.WPILibRepositoriesPlugin' version '2027.0.0'
+  id 'org.wpilib.NativeUtils' version '2027.1.1'
+  id 'org.wpilib.GradleJni' version '2027.0.0'
+  id 'org.wpilib.GradleVsCode' version '2027.0.0'
 }
 
 // WPILib Version
@@ -34,15 +34,15 @@ apply from: 'config.gradle'
 
 // Apply Java configuration
 dependencies {
-    implementation "edu.wpi.first.cscore:cscore-java:$wpilibVersion"
-    implementation "edu.wpi.first.cameraserver:cameraserver-java:$wpilibVersion"
-    implementation "edu.wpi.first.ntcore:ntcore-java:$wpilibVersion"
-    implementation "edu.wpi.first.wpilibj:wpilibj-java:$wpilibVersion"
-    implementation "edu.wpi.first.wpiutil:wpiutil-java:$wpilibVersion"
-    implementation "edu.wpi.first.wpimath:wpimath-java:$wpilibVersion"
-    implementation "edu.wpi.first.wpiunits:wpiunits-java:$wpilibVersion"
-    implementation "edu.wpi.first.datalog:datalog-java:$wpilibVersion"
-    implementation "edu.wpi.first.hal:hal-java:$wpilibVersion"
+    implementation "org.wpilib.cscore:cscore-java:$wpilibVersion"
+    implementation "org.wpilib.cameraserver:cameraserver-java:$wpilibVersion"
+    implementation "org.wpilib.ntcore:ntcore-java:$wpilibVersion"
+    implementation "org.wpilib.wpilibj:wpilibj-java:$wpilibVersion"
+    implementation "org.wpilib.wpiutil:wpiutil-java:$wpilibVersion"
+    implementation "org.wpilib.wpimath:wpimath-java:$wpilibVersion"
+    implementation "org.wpilib.wpiunits:wpiunits-java:$wpilibVersion"
+    implementation "org.wpilib.datalog:datalog-java:$wpilibVersion"
+    implementation "org.wpilib.hal:hal-java:$wpilibVersion"
     implementation "org.ejml:ejml-simple:0.43.1"
     implementation "com.fasterxml.jackson.core:jackson-annotations:2.15.2"
     implementation "com.fasterxml.jackson.core:jackson-core:2.15.2"
@@ -117,7 +117,7 @@ model {
       binaries.all {
         lib library: 'VendorDriver', linkage: 'shared'
       }
-      nativeUtils.useRequiredLibrary(it, 'wpilib_shared_2027')
+      nativeUtils.useRequiredLibrary(it, 'wpilib_shared')
     }
 
     VendorDriver(JniNativeLibrarySpec) {
@@ -138,7 +138,7 @@ model {
         }
       }
 
-      nativeUtils.useRequiredLibrary(it, "driver_shared_2027")
+      nativeUtils.useRequiredLibrary(it, "driver_shared")
     }
   }
   testSuites {
@@ -163,7 +163,7 @@ model {
           }
         }
 
-        nativeUtils.useRequiredLibrary(it, "wpilib_shared_2027", "googletest_static")
+        nativeUtils.useRequiredLibrary(it, "wpilib_shared", "googletest_static")
     }
 
     VendorDriverTest {
@@ -173,7 +173,7 @@ model {
                 include '**/*.cpp'
             }
         }
-        nativeUtils.useRequiredLibrary(it, "wpilib_shared_2027", "googletest_static")
+        nativeUtils.useRequiredLibrary(it, "wpilib_shared", "googletest_static")
     }
   }
 }
@@ -181,5 +181,5 @@ model {
 apply from: 'publish.gradle'
 
 wrapper {
-  gradleVersion '8.11'
+  gradleVersion '9.2.0'
 }
