@@ -158,6 +158,35 @@ task vendordepJsonZip(type: Zip) {
     dependsOn vendordepJson
 }
 
+task copyToWpilibLocal(type: Copy) {
+    description = 'Copies published artifacts to wpilib/{year}/maven for local testing'
+    group = 'Publishing'
+
+    dependsOn publish
+
+    // Read FRC year from vendordep JSON during configuration
+    def vendorJson = new groovy.json.JsonSlurper().parseText(file(templateVendorFile).text)
+    def frcYear = vendorJson.frcYear
+    def wpilibMavenPath
+
+    // WPILib location differs by OS:
+    // Windows: C:\Users\Public\wpilib\{year}\maven
+    // Unix/Mac: ~/wpilib/{year}/maven
+    if (System.properties['os.name'].toLowerCase().contains('windows')) {
+        wpilibMavenPath = file("C:\\Users\\Public\\wpilib\\${frcYear}\\maven")
+    } else {
+        wpilibMavenPath = file("${System.properties['user.home']}/wpilib/${frcYear}/maven")
+    }
+
+    from releasesRepoUrl
+    into wpilibMavenPath
+
+    doLast {
+        println "Published ${baseArtifactId} to WPILib local maven: ${wpilibMavenPath}"
+        println "Artifacts are now available for local robot projects to use."
+    }
+}
+
 artifacts {
     tasks.named("assemble") {
         dependsOn(sourcesJar)
