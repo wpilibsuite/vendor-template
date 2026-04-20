@@ -34,6 +34,7 @@ apply from: 'config.gradle'
 
 // Apply Java configuration
 dependencies {
+    annotationProcessor "io.avaje:avaje-jsonb-generator:3.11"
     implementation "org.wpilib.cscore:cscore-java:$wpilibVersion"
     implementation "org.wpilib.cameraserver:cameraserver-java:$wpilibVersion"
     implementation "org.wpilib.ntcore:ntcore-java:$wpilibVersion"
@@ -44,9 +45,7 @@ dependencies {
     implementation "org.wpilib.datalog:datalog-java:$wpilibVersion"
     implementation "org.wpilib.hal:hal-java:$wpilibVersion"
     implementation "org.ejml:ejml-simple:0.43.1"
-    implementation "com.fasterxml.jackson.core:jackson-annotations:2.15.2"
-    implementation "com.fasterxml.jackson.core:jackson-core:2.15.2"
-    implementation "com.fasterxml.jackson.core:jackson-databind:2.15.2"
+    implementation "io.avaje:avaje-jsonb:3.11"
     implementation 'edu.wpi.first.thirdparty.frc2025.opencv:opencv-java:4.10.0-2'
 
     testImplementation 'org.junit.jupiter:junit-jupiter:5.10.1'
