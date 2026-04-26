@@ -8,13 +8,13 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - container: wpilib/systemcore-cross-ubuntu:2025-24.04
+          - container: wpilib/systemcore-cross-ubuntu:2027-24.04
             artifact-name: SystemCore
             build-options: "-Ponlylinuxsystemcore"
-          - container: wpilib/aarch64-cross-ubuntu:bookworm-24.04
+          - container: wpilib/aarch64-cross-ubuntu:2027-bookworm-24.04
             artifact-name: Arm64
             build-options: "-Ponlylinuxarm64"
-          - container: wpilib/ubuntu-base:24.04
+          - container: wpilib/systemcore-cross-ubuntu:2027-24.04
             artifact-name: Linux
             build-options: ""
     name: "Build - ${{ matrix.artifact-name }}"
@@ -45,7 +45,7 @@ jobs:
           - os: windows-2022
             artifact-name: Win64
             architecture: x64
-          - os: macos-14
+          - os: macos-15
             artifact-name: macOS
             architecture: aarch64
     name: "Build - ${{ matrix.artifact-name }}"
