@@ -23,11 +23,7 @@ if (project.hasProperty('releaseMode')) {
   wpilibRepositories.addAllDevelopmentRepositories(project)
 }
 
-java {
-  sourceCompatibility = JavaVersion.VERSION_25
-  targetCompatibility = JavaVersion.VERSION_25
-}
-var javaVersion = "25"
+var javaVersion = 25
 
 // Apply C++ configuration
 apply from: 'config.gradle'
@@ -70,6 +66,7 @@ if (project.hasProperty('onlylinuxarm64') || project.hasProperty('onlywindowsarm
 tasks.withType(JavaCompile) {
     options.compilerArgs.add '-XDstringConcat=inline'
     options.encoding = 'UTF-8'
+    options.release = javaVersion
 }
 
 // Setup Javadocs to link back to WPILib docs
