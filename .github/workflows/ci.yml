@@ -51,7 +51,7 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - os: windows-2022
+          - os: windows-2025
             artifact-name: Win64
             architecture: x64
           - os: macos-15
