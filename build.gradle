@@ -5,7 +5,7 @@ plugins {
   id 'java'
   id 'google-test'
   id 'org.wpilib.WPILibRepositoriesPlugin' version '2027.0.0'
-  id 'org.wpilib.NativeUtils' version '2027.13.1'
+  id 'org.wpilib.NativeUtils' version '2027.14.3'
   id 'org.wpilib.GradleJni' version '2027.0.0'
   id 'org.wpilib.GradleVsCode' version '2027.0.0'
 }
@@ -16,7 +16,6 @@ ext.wpilibVersion = "2027.+"
 repositories {
   mavenCentral()
 }
-wpilibRepositories.use2027Repos()
 if (project.hasProperty('releaseMode')) {
   wpilibRepositories.addAllReleaseRepositories(project)
 } else {
@@ -40,6 +39,8 @@ dependencies {
     implementation "org.wpilib.wpimath:wpimath-java:$wpilibVersion"
     implementation "org.wpilib.wpiunits:wpiunits-java:$wpilibVersion"
     implementation "org.wpilib.datalog:datalog-java:$wpilibVersion"
+    implementation "org.wpilib.telemetry:telemetry-java:$wpilibVersion"
+    implementation "org.wpilib.tunables:tunables-java:$wpilibVersion"
     implementation "org.wpilib.hal:hal-java:$wpilibVersion"
     implementation "org.ejml:ejml-simple:0.44.0"
     implementation 'org.wpilib.thirdparty.opencv:opencv-java:2027-4.13.0-3'
@@ -160,7 +161,7 @@ model {
           }
         }
 
-        nativeUtils.useRequiredLibrary(it, "wpilib_shared", "googletest_static")
+        nativeUtils.useRequiredLibrary(it, "wpilib_shared", "catch2_static")
     }
 
     VendorDriverTest {
@@ -170,7 +171,7 @@ model {
                 include '**/*.cpp'
             }
         }
-        nativeUtils.useRequiredLibrary(it, "wpilib_shared", "googletest_static")
+        nativeUtils.useRequiredLibrary(it, "wpilib_shared", "catch2_static")
     }
   }
 }
