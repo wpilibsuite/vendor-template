@@ -4,14 +4,20 @@ plugins {
   id 'cpp'
   id 'java'
   id 'google-test'
-  id 'org.wpilib.WPILibRepositoriesPlugin' version '2027.0.0'
-  id 'org.wpilib.NativeUtils' version '2027.14.3'
-  id 'org.wpilib.GradleJni' version '2027.0.0'
-  id 'org.wpilib.GradleVsCode' version '2027.0.0'
+  alias(wpilib.plugins.wpilib.repositories)
+  id 'org.wpilib.NativeUtils'
+  alias(wpilib.plugins.wpilib.gradle.jni)
+  id 'org.wpilib.GradleVsCode'
 }
 
-// WPILib Version
-ext.wpilibVersion = "2027.+"
+// Versions from the WPILib-published version catalog
+ext {
+    avajeVersion = wpilib.versions.avaje.get()
+    ejmlVersion = wpilib.versions.ejml.get()
+    quickbufVersion = wpilib.versions.quickbuf.get()
+    opencvVersion = wpilib.versions.opencv.get()
+    mrcLibVersion = wpilib.versions.mrclib.get()
+}
 
 repositories {
   mavenCentral()
@@ -29,8 +35,8 @@ apply from: 'config.gradle'
 
 // Apply Java configuration
 dependencies {
-    annotationProcessor "io.avaje:avaje-jsonb-generator:3.11"
-    implementation "io.avaje:avaje-jsonb:3.11"
+    annotationProcessor "io.avaje:avaje-jsonb-generator:$avajeVersion"
+    implementation "io.avaje:avaje-jsonb:$avajeVersion"
     implementation "org.wpilib.cscore:cscore-java:$wpilibVersion"
     implementation "org.wpilib.cameraserver:cameraserver-java:$wpilibVersion"
     implementation "org.wpilib.ntcore:ntcore-java:$wpilibVersion"
@@ -42,12 +48,12 @@ dependencies {
     implementation "org.wpilib.telemetry:telemetry-java:$wpilibVersion"
     implementation "org.wpilib.tunables:tunables-java:$wpilibVersion"
     implementation "org.wpilib.hal:hal-java:$wpilibVersion"
-    implementation "org.ejml:ejml-simple:0.44.0"
-    implementation 'org.wpilib.thirdparty.opencv:opencv-java:2027-4.13.0-3'
+    implementation "org.ejml:ejml-simple:$ejmlVersion"
+    implementation "org.wpilib.thirdparty.opencv:opencv-java:$opencvVersion"
 
-    testImplementation 'org.junit.jupiter:junit-jupiter:5.10.1'
-    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
-    testRuntimeOnly 'us.hebi.quickbuf:quickbuf-runtime:1.4'
+    testImplementation wpilib.junit.api
+    testRuntimeOnly wpilib.junit.launcher
+    testRuntimeOnly "us.hebi.quickbuf:quickbuf-runtime:$quickbufVersion"
 }
 
 // Set up java tests

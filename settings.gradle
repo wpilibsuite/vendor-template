@@ -3,4 +3,69 @@ pluginManagement {
         mavenLocal()
         gradlePluginPortal()
     }
+    resolutionStrategy {
+        eachPlugin {
+            // These plugins have version entries in the WPILib catalog but no plugin aliases.
+            if (requested.id.id == 'org.wpilib.NativeUtils') {
+                useVersion(gradle.ext.wpilibCatalogVersions.getProperty('nativeUtils'))
+            }
+            if (requested.id.id == 'org.wpilib.GradleVsCode') {
+                useVersion(gradle.ext.wpilibCatalogVersions.getProperty('gradleCppVscode'))
+            }
+        }
+    }
+}
+
+// WPILib publishes its Gradle version catalog as a zip containing libs.versions.toml.
+// Resolve it with the same version as the WPILib dependencies, extract it, and import it.
+buildscript {
+    def properties = new Properties()
+    new File(gradle.startParameter.currentDir, 'gradle.properties').withInputStream { properties.load(it) }
+
+    def projectProperties = gradle.startParameter.projectProperties
+    def wpilibVersion = projectProperties.containsKey('wpilibVersion') ? projectProperties.get('wpilibVersion') : properties.getProperty('wpilibVersion')
+    def repository = (projectProperties.containsKey('releaseMode') || properties.containsKey('releaseMode')) ? 'release' : 'development'
+
+    repositories {
+        maven {
+            url = "https://frcmaven.wpi.edu/artifactory/${repository}/"
+        }
+    }
+    dependencies {
+        classpath "org.wpilib:wpilib-versions:${wpilibVersion}@zip"
+    }
+}
+
+def catalogZip = buildscript.configurations.classpath.files.find { it.name.startsWith('wpilib-versions-') }
+def catalogFile = file("$settingsDir/build/wpilib-versions/libs.versions.toml")
+catalogFile.parentFile.mkdirs()
+new java.util.zip.ZipFile(catalogZip).withCloseable { zip ->
+    catalogFile.bytes = zip.getInputStream(zip.getEntry('libs.versions.toml')).bytes
+}
+
+// Read plugin versions from the catalog for plugins that have no catalog plugin alias.
+def catalogVersions = new Properties()
+def inVersions = false
+catalogFile.eachLine { rawLine ->
+    def line = rawLine.trim()
+    if (line == '[versions]') {
+        inVersions = true
+        return
+    }
+    if (line.startsWith('[')) {
+        inVersions = false
+        return
+    }
+    if (!inVersions || line.isEmpty() || line.startsWith('#')) return
+    def matcher = line =~ /^([^=]+?)\s*=\s*"([^"]+)"\s*$/
+    if (matcher.matches()) catalogVersions[matcher.group(1).trim()] = matcher.group(2)
+}
+gradle.ext.wpilibCatalogVersions = catalogVersions
+
+dependencyResolutionManagement {
+    versionCatalogs {
+        wpilib {
+            from(files(catalogFile))
+        }
+    }
 }
